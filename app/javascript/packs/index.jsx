@@ -6,13 +6,19 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import App from '../components/App'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
+import actioncable from 'actioncable'
 
+const CableApp = {}
+
+CableApp.cable = actioncable.createConsumer('ws://localhost:3000/cable')
 
 document.addEventListener('DOMContentLoaded', () => {
   ReactDOM.render(
-    <Router>
-      <Route path="/" component={App} />
-    </Router>,
+      <Router>
+        <Route path="/">
+          <App cableApp={CableApp}/>
+        </Route> 
+      </Router>,
     document.body.appendChild(document.createElement('div')),
   )
 })
