@@ -13,21 +13,50 @@
  *= require_tree .
  *= require_self
  */
+
 html {
-  height: 100vh;
-  background-image: url(out-bw-fade.png);
-  background-repeat: no-repeat;
-  /* background-size: 70%; */
-  background-position: left bottom;
-  background-color: rgba(0, 0, 0, 0.06);
+    height: 100vh;
+    background-image: url(out-bw-fade.png);
+    background-repeat: no-repeat;
+    /* background-size: 70%; */
+    background-position: left bottom;
+    background-color: rgba(0, 0, 0, 0.06);
 }
+
 .image {
-  margin: 0 auto;
-  width: 540px;
+    margin: 0 auto;
+    width: 540px;
 }
+
 .foot {
-  left: 0;
-  bottom: 0;
-  text-align: center;
-  position: fixed;
+    left: 0;
+    bottom: 0;
+    text-align: center;
+    position: fixed;
+}
+
+.tile.is-ancestor:nth-child(2n + 1)>.tile>.tile.is-child:nth-child(2n),
+.tile.is-ancestor:nth-child(2n)>.tile>.tile.is-child:nth-child(2n + 1) {
+    background-color: #8da897;
+}
+
+.card {
+    height: 80%;
+}
+
+.column.board {
+    border: 5px inset black;
+}
+
+.game-card {
+    border-radius: 6px;
+    box-shadow: 0 0.5em 1em -0.125em 0 0px 0 1px 0.02;
+}
+
+.flip-vertical {
+    transform: rotate(0.5turn)
+}
+
+.valid {
+    background-color: aqua;
 }
