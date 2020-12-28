@@ -14,6 +14,7 @@ const Board = ({ board, selectPiece, validMoves }) => {
             validMoves={validMoves}
           />
         ))}
+
       </div>
     </div>
   );
