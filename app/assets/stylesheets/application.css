@@ -13,3 +13,21 @@
  *= require_tree .
  *= require_self
  */
+html {
+  height: 100vh;
+  background-image: url(out-bw-fade.png);
+  background-repeat: no-repeat;
+  /* background-size: 70%; */
+  background-position: left bottom;
+  background-color: rgba(0, 0, 0, 0.06);
+}
+.image {
+  margin: 0 auto;
+  width: 540px;
+}
+.foot {
+  left: 0;
+  bottom: 0;
+  text-align: center;
+  position: fixed;
+}
