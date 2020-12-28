@@ -8,6 +8,7 @@ import Game from "../containers/Game";
 export default class App extends Component {
   state = {
     players: [],
+    user_name: '',
     game_id: null,
     game_state: '',
     winning_user_id: null,
@@ -31,28 +32,38 @@ export default class App extends Component {
   handleReceived = (data) => {
     if (data.message){
       console.log(data.message)
-    }else if(data.game){
+    }
+    if(data.game){
       this.setState((_) => ({
-        players: [data.game.blue_user_id, data.game.red_user_id],
         game_id: data.game.id,
         game_state: data.game.state,
         winning_user_id: data.game.winning_user_id
 
       }))
+    }
+    if(data.players){
+      this.setState((_) => ({
+        players: [...data.players]
+
+      }))
     }    
+  }
+  whatColor = () => {
+    return this.state.players[0] === this.state.user_name ? 'Red' : 'Blue'
   }
   handleGameStarted = () => {
     
   }
 
   handleLogin = (user) => {
-    this.setState({loggedIn: true})
+    this.setState({loggedIn: true, user_name: user})
     // console.log(this.channel)
     this.channel.perform('joined_game', { players: user})
   }
   render() {
     return (
       <div>
+        {!!this.state.game_id && <h1>Playing as {this.whatColor()}</h1> }
         {this.state.loggedIn && <h2>Start Page</h2>}
         {!this.state.loggedIn && <NavLink exact to="/login">Login</NavLink>}
         {this.state.loggedIn && <NavLink exact to="/onitama">Begin Game</NavLink>}
