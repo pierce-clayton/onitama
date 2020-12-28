@@ -1,12 +1,14 @@
 import React, { Component } from 'react'
+import Board from '../components/Board'
+import Waiting from '../components/Waiting'
 
 export default class Game extends Component {
 
   render() {
-    // console.log(this.props)
+    // THIS IS A CONTAINER
     return (
       <div>
-          {this.props.game.game_id ? <h1>Board Goes Here</h1> : <h1>Waiting screen goes here</h1>}
+          {this.props.game.game_id ? <Board cable={this.props.cable} game={this.props.game} /> : <Waiting/>}
           
       </div>
     )
