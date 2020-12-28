@@ -3,7 +3,10 @@ import React, { Component } from 'react'
 export default class Board extends Component {
 
   componentDidMount = () => {
-    // this should start the subscription to the messages channel Message{game_id}
+    // this should start the subscription to the matches channel Match{game_id}
+  }
+  componentWillUnmount = () => {
+    // this should clean up the match channel
   }
   render() {
 
