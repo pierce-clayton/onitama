@@ -2,14 +2,12 @@ import React, { Component } from 'react'
 
 export default class Game extends Component {
 
-  state = {
-    games: []
-  }
-
   render() {
+    // console.log(this.props)
     return (
       <div>
-          <h1>Game</h1>
+          {this.props.game.game_id ? <h1>Board Goes Here</h1> : <h1>Waiting screen goes here</h1>}
+          
       </div>
     )
   }

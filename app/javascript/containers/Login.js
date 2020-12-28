@@ -16,13 +16,13 @@ class LogIn extends Component {
     this.props.handleLogin(event.target.form.user_field.value)
   }
   render() {
-    return <div>
+    return (<div>
       <LoginForm 
       user_field={this.state.user_field}
       onChange={this.onChange}
       onSubmit={this.onSubmit}
       />
-    </div>;
+    </div>);
   }
 }
 
