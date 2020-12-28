@@ -1,16 +1,22 @@
-import React, { Component } from 'react'
+import React from "react";
+import BoardRow from "./BoardRow";
 
-export default class Board extends Component {
-
-  componentDidMount = () => {
-    // this should start the subscription to the messages channel Message{game_id}
-  }
-  render() {
-
-    return (
-      <div>
-        <h1>Game Board goes here</h1>
+const Board = ({ board, selectPiece, validMoves }) => {
+  return (
+    <div className="columns">
+      <div className="column board is-12 is-offset-6">
+        {board.map((rowPieces, i) => (
+          <BoardRow
+            key={i}
+            pieces={rowPieces}
+            row={i}
+            selectPiece={selectPiece}
+            validMoves={validMoves}
+          />
+        ))}
       </div>
-    )
-  }
-}
+    </div>
+  );
+};
+
+export default Board;
