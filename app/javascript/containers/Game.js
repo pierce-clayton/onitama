@@ -151,6 +151,8 @@ class Game extends Component {
     this.state.validMoves.forEach((move) => {
       if (move[0] === +col && move[1] === +row) {
         return this.setState((prevState) => {
+          // check if move will take opponents master
+          const won = this.isGameOver(prevState, move);
           // move selected piece to new square and empty out current square
           prevState.board[row][col] = prevState.selectedPiece.id;
           prevState.board[prevState.selectedPiece.row][
@@ -178,12 +180,7 @@ class Game extends Component {
               }
             });
           }
-
-          //          3    4
-          //   5  [ redBoard ]
-          //      [ bluBoard ]  2
-          //          0    1
-          //
+          if (won) window.alert(`${prevState.currentPlayer} Wins!`);
           //reset state
           return {
             board: [...prevState.board],
@@ -195,6 +192,26 @@ class Game extends Component {
         });
       }
     });
+  };
+
+  //check to see if the current move will end the game
+  isGameOver = ({ board, currentPlayer, selectedPiece }, [col, row]) => {
+    // was teh opponenets master peice taken
+    if (
+      (currentPlayer === "blue" && board[row][col] === "Rm") ||
+      (currentPlayer === "red" && board[row][col] === "Bm")
+    ) {
+      console.log("Capture");
+      return true;
+    } else if (
+      (selectedPiece.id === "Bm" && row === 0 && col === 2) ||
+      (selectedPiece.id === "Rm" && row === 4 && col === 2)
+    ) {
+      console.log("gate");
+      return true;
+    } else {
+      return false;
+    }
   };
 
   render() {
@@ -236,16 +253,3 @@ class Game extends Component {
 }
 
 export default Game;
-
-// export default class Game extends Component {
-
-//   render() {
-//     // THIS IS A CONTAINER
-//     return (
-//       <div>
-//           {this.props.game.game_id ? <Board cable={this.props.cable} game={this.props.game} /> : <Waiting/>}
-
-//       </div>
-//     )
-//   }
-// }
