@@ -17,17 +17,41 @@ html {
   height: 100vh;
   background-image: url(out-bw-fade.png);
   background-repeat: no-repeat;
-  /* background-size: 70%; */
+  background-size: 100%;
   background-position: left bottom;
   background-color: rgba(0, 0, 0, 0.06);
+  background-attachment: fixed;
 }
-.image {
+.image.logo {
   margin: 0 auto;
-  width: 540px;
+  width: 30rem;
 }
 .foot {
   left: 0;
   bottom: 0;
   text-align: center;
   position: fixed;
+}
+.tile.is-ancestor:nth-child(2n + 1) > .tile > .tile.invalid:nth-child(2n),
+.tile.is-ancestor:nth-child(2n) > .tile > .tile.invalid:nth-child(2n + 1) {
+  background-color: rgb(141,168,155, 0.7);
+}
+
+.game-card {
+width: 7rem
+}
+.column.board {
+  border: 3px inset rgb(43, 42, 42);
+}
+
+.game-card {
+  border-radius: 6px;
+  box-shadow: 0 0.5em 1em -0.125em 0 0px 0 1px 0.02;
+}
+
+.flip-vertical {
+  transform: rotate(0.5turn)
+}
+.tile.valid {
+  background-color: aqua;
 }

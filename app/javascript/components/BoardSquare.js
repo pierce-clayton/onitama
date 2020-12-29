@@ -1,10 +1,10 @@
 import React from "react";
 
 const isValid = (row, col, validMoves) => {
-  let squareClass = "tile is-child ";
+  let squareClass = "tile ";
   squareClass += validMoves.find((move) => move[0] === col && move[1] === row)
     ? "valid"
-    : "";
+    : "invalid";
   return squareClass;
 };
 
@@ -17,7 +17,7 @@ const BoardSquare = ({ piece, selectPiece, row, col, validMoves }) => {
       data-col={col}
       onClick={selectPiece}
     >
-      <figure className="image is-square"></figure>
+      <figure className="image board-square is-square"></figure>
       <p>{piece}</p>
     </div>
   );

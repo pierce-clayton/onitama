@@ -103,7 +103,17 @@ class Game extends Component {
 
   //update state with selected piece and show possible moves
   selectPiece = ({ currentTarget }) => {
+    //prevent moving before a card is selected
     if (!this.state.selectedCard) return null;
+
+    //restrict starting locations to current piece lcoations
+    //############## Update this method once backend is connected#################
+    if (
+      currentTarget.textContent[0] !== this.state.currentPlayer[0].toUpperCase()
+    ) {
+      return this.setState({ validMoves: [] });
+    }
+
     let yFactor, opponent;
     if (this.state.currentPlayer === "blue") {
       yFactor = -1;
@@ -124,8 +134,8 @@ class Game extends Component {
       //check if move is valid
       if (x > 4 || x < 0 || y > 4 || y < 0) return;
       if (
-        this.state.board[x][y] === 0 ||
-        this.state.board[x][y][0] === opponent
+        this.state.board[y][x] === 0 ||
+        this.state.board[y][x][0] === opponent
       ) {
         validMoves.push([x, y]);
       }
@@ -135,45 +145,36 @@ class Game extends Component {
 
   render() {
     return (
-      <section className="hero is-full-height game">
-        <div className="hero-body">
-          <div className="container has-text-centered">
-            <div className="columns is-vcentered game">
-              <div className="column is-2">
-                <Card
-                  flip={true}
-                  card={this.findCardByLoc(5)}
-                  selectCard={this.selectCard}
-                />
-              </div>
-              <div className="column is-4">
-                <PlayerCards
-                  flip={true}
-                  card1={this.findCardByLoc(3)}
-                  card2={this.findCardByLoc(4)}
-                  selectCard={this.selectCard}
-                />
-                <Board
-                  board={this.state.board}
-                  selectPiece={this.selectPiece}
-                  validMoves={this.state.validMoves}
-                />
-                <PlayerCards
-                  card1={this.findCardByLoc(0)}
-                  card2={this.findCardByLoc(1)}
-                  selectCard={this.selectCard}
-                />
-              </div>
-              <div className="column is-2 is-offset-2">
-                <Card
-                  card={this.findCardByLoc(2)}
-                  selectCard={this.selectCard}
-                />
-              </div>
-            </div>
-          </div>
+      <div className="columns is-mobile is-vcentered game">
+        <div className="column is-2">
+          <Card
+            flip={true}
+            card={this.findCardByLoc(5)}
+            selectCard={this.selectCard}
+          />
         </div>
-      </section>
+        <div className="column is-4">
+          <PlayerCards
+            flip={true}
+            card1={this.findCardByLoc(3)}
+            card2={this.findCardByLoc(4)}
+            selectCard={this.selectCard}
+          />
+          <Board
+            board={this.state.board}
+            selectPiece={this.selectPiece}
+            validMoves={this.state.validMoves}
+          />
+          <PlayerCards
+            card1={this.findCardByLoc(0)}
+            card2={this.findCardByLoc(1)}
+            selectCard={this.selectCard}
+          />
+        </div>
+        <div className="column is-2 is-offset-2">
+          <Card card={this.findCardByLoc(2)} selectCard={this.selectCard} />
+        </div>
+      </div>
     );
   }
 }

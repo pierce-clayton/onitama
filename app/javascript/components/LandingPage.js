@@ -7,7 +7,7 @@ const LandingPage = (props) => {
   return (
     <div>
       <div className="is-centered">
-        <figure className="image p-6">
+        <figure className="image logo p-6">
           <img src={Logo} alt="onitama logo in black" />
         </figure>
       </div>

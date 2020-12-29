@@ -8,8 +8,12 @@ const Card = ({ flip, card, selectCard }) => {
   const imgClass = flip ? "flip-vertical" : "";
   return (
     <div className="game-card" onClick={() => selectCard(card)}>
-      <figure className="image is-4by3">
-        <img src={card.name} alt={card.name} className={imgClass} />
+      <figure className="image game-card is-4by3">
+        <img
+          src={require(`images/${card.name}.png`)}
+          alt={card.name}
+          className={imgClass}
+        />
       </figure>
     </div>
   );
