@@ -14,7 +14,7 @@ export default class App extends Component {
     winning_user_id: null,
     loggedIn: false,
   };
-
+  match_channel = {}
   channel = this.props.cableApp.cable.subscriptions.create(
     { channel: "GameChannel" },
     {
@@ -30,6 +30,7 @@ export default class App extends Component {
   );
 
   handleConnected = () => {
+    // return channel.perform('get_match_channel', { user_id: })
     // console.log('handle_connected')
   };
   handleReceived = (data) => {
@@ -53,10 +54,22 @@ export default class App extends Component {
     return this.state.players[0] === this.state.user_name ? "Red" : "Blue";
   };
   handleGameStarted = () => {};
-
+  buildMatchChannel = (name) => {
+    this.match_channel = this.props.cableApp.cable.subscriptions.create({channel: `Match${name}`}, {
+      connected: () => {
+        console.log('connected to match channel ' + name )
+      },
+      received: (data) => {
+        console.log(data)
+      },
+      create: () => {},
+      update: () => {},
+      destroy: () => {}
+    })
+  }
   handleLogin = (user) => {
     this.setState({ loggedIn: true, user_name: user });
-    // console.log(this.channel)
+    this.buildMatchChannel(user)
     this.channel.perform("joined_game", { players: user });
   };
   render() {
