@@ -67,8 +67,9 @@ export default class App extends Component {
       destroy: () => {}
     })
   }
-  handleLogin = (user) => {
+  handleLogin = (user, password) => {
     this.setState({ loggedIn: true, user_name: user });
+    
     this.buildMatchChannel(user)
     this.channel.perform("joined_game", { players: user });
   };

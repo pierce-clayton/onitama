@@ -12,7 +12,7 @@ const Login = (props) => {
 
   // will need to talk to backend
   const handlesLoginBtn = () => {
-    props.handleLogin(username);
+    props.handleLogin(username, password);
   };
   return (
     <div style={{ display: "flex", justifyContent: "center" }}>

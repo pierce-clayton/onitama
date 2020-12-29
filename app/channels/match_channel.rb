@@ -1,6 +1,5 @@
 class MatchChannel < ApplicationCable::Channel
   def subscribed
-    byebug
     user = User.find_by(id: params[:user_id])
     stream_from "Match#{user[:user_name]}"
     # stream_from "some_channel"
