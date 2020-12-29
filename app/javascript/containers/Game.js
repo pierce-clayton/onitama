@@ -39,12 +39,12 @@ class Game extends Component {
       {
         name: "frog",
         location: 3,
-        moves: "(1-1) (-1,1) (-2,0)",
+        moves: "(1,-1) (-1,1) (-2,0)",
       },
       {
         name: "mantis",
         location: 4,
-        moves: "(0,-1) (1,-1) (-1,1)",
+        moves: "(0,-1) (1,1) (-1,1)",
       },
     ],
   };
@@ -69,17 +69,28 @@ class Game extends Component {
   };
 
   // Update state with selected card
-  selectCard = (selectedCard) => {
+  selectCard = (e, selectedCard) => {
     // only allow a player to select their own cards
     if (
       (this.isRedCard(selectedCard) && this.state.currentPlayer === "blue") ||
       (this.isBlueCard(selectedCard) && this.state.currentPlayer === "red")
     ) {
-      this.setState({
-        selectedCard,
-        validMoves: [],
-      });
+      this.sendSelectedCard(selectedCard);
     }
+  };
+
+  //send selectedcard info to the backend
+  sendSelectedCard = (selectedCard) => {
+    console.log("I'll send selectedCard and reset valid moves to the backend");
+    this.updateSelectedCardState(selectedCard);
+  };
+
+  //update selectedCard state with response from action cable
+  updateSelectedCardState = (selectedCard) => {
+    this.setState({
+      selectedCard,
+      validMoves: [],
+    });
   };
 
   //translate card moves into [row][col] deltas
@@ -112,13 +123,15 @@ class Game extends Component {
 
   //update state with selected piece and show possible moves
   selectPiece = (currentTarget) => {
-    let yFactor, opponent;
+    let yFactor, xFactor, opponent;
     if (this.state.currentPlayer === "blue") {
       yFactor = -1;
+      xFactor = 1;
       //update this once we have backend data so opponents are properly identified
       opponent = "R";
     } else {
       yFactor = 1;
+      xFactor = -1;
       //update this once we have backend data so opponents are properly identified
       opponent = "B";
     }
@@ -127,7 +140,7 @@ class Game extends Component {
     const moves = this.getMoves();
     let validMoves = [];
     moves.forEach((move) => {
-      let x = col + move[0];
+      let x = col + move[0] * xFactor;
       let y = row + move[1] * yFactor;
       //check if move is valid
       if (x > 4 || x < 0 || y > 4 || y < 0) return;
@@ -138,16 +151,29 @@ class Game extends Component {
         validMoves.push([x, y]);
       }
     });
+    const id = currentTarget.textContent;
+    this.sendValidMoves(validMoves, id, col, row);
+  };
+
+  //send vaild moves associated with a selectedPiece to the backend
+  sendValidMoves = (validMoves, id, col, row) => {
+    console.log(
+      "I'll send the current piece and associated valid moves to the backend!"
+    );
+    this.updateValidMoves(validMoves, id, col, row);
+  };
+
+  updateValidMoves = (validMoves, id, col, row) => {
     this.setState({
       validMoves,
-      selectedPiece: { id: currentTarget.textContent, col, row },
+      selectedPiece: { id, col, row },
     });
   };
 
   //move piece to selected valid location
   movePiece = ({ dataset }) => {
     const { row, col } = dataset;
-    console.log(row, col);
+
     this.state.validMoves.forEach((move) => {
       if (move[0] === +col && move[1] === +row) {
         return this.setState((prevState) => {
@@ -181,18 +207,33 @@ class Game extends Component {
             });
           }
           if (won) window.alert(`${prevState.currentPlayer} Wins!`);
+          // *******************************************
+          // for backend:
+          // Piece and end location
+          //
+
           //reset state
-          return {
-            board: [...prevState.board],
-            currentPlayer: newPlayer,
-            selectedCard: {},
-            selectedPiece: {},
-            validMoves: [],
-          };
+          //
+          return this.sendMove(prevState, newPlayer);
         });
       }
     });
   };
+
+  //update board after a move is made on the backend
+  sendMove(prevState, newPlayer) {
+    console.log(
+      "I'm sending the new board and card state and new current player to teh backend "
+    );
+    return {
+      board: [...prevState.board],
+      currentPlayer: newPlayer,
+      selectedCard: {},
+      selectedPiece: {},
+      validMoves: [],
+      cards: [...prevState.cards],
+    };
+  }
 
   //check to see if the current move will end the game
   isGameOver = ({ board, currentPlayer, selectedPiece }, [col, row]) => {
@@ -217,7 +258,7 @@ class Game extends Component {
   render() {
     return (
       <div className="columns is-mobile is-vcentered game">
-        <div className="column is-2">
+        <div className="column is-1 is-offset-1">
           <Card
             flip={true}
             card={this.findCardByLoc(5)}
