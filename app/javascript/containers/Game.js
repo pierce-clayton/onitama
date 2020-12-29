@@ -11,6 +11,7 @@ class Game extends Component {
   state = {
     currentPlayer: "blue",
     selectedCard: {},
+    selectedPiece: {},
     validMoves: [],
     board: [
       ["Rs1", "Rs2", "Rm", "Rs3", "Rs4"],
@@ -93,27 +94,24 @@ class Game extends Component {
     });
   };
 
-  //   isRedPiece = (selectedpiece) => {
-  //     return selectedCard.location === 0 || selectedCard.location === 1;
-  //   };
-
-  //   isBluePiece = (selectedpiece) => {
-  //     return selectedCard.location === 3 || selectedCard.location === 4;
-  //   };
-
-  //update state with selected piece and show possible moves
-  selectPiece = ({ currentTarget }) => {
-    //prevent moving before a card is selected
+  //handle click on the board
+  handleClick = ({ currentTarget }) => {
     if (!this.state.selectedCard) return null;
 
     //restrict starting locations to current piece lcoations
     //############## Update this method once backend is connected#################
     if (
-      currentTarget.textContent[0] !== this.state.currentPlayer[0].toUpperCase()
+      currentTarget.textContent[0] === this.state.currentPlayer[0].toUpperCase()
     ) {
-      return this.setState({ validMoves: [] });
+      // this.setState({ selectPiece: {currentTarget.textContent} });
+      this.selectPiece(currentTarget);
+    } else {
+      this.movePiece(currentTarget);
     }
+  };
 
+  //update state with selected piece and show possible moves
+  selectPiece = (currentTarget) => {
     let yFactor, opponent;
     if (this.state.currentPlayer === "blue") {
       yFactor = -1;
@@ -140,7 +138,63 @@ class Game extends Component {
         validMoves.push([x, y]);
       }
     });
-    this.setState({ validMoves });
+    this.setState({
+      validMoves,
+      selectedPiece: { id: currentTarget.textContent, col, row },
+    });
+  };
+
+  //move piece to selected valid location
+  movePiece = ({ dataset }) => {
+    const { row, col } = dataset;
+    console.log(row, col);
+    this.state.validMoves.forEach((move) => {
+      if (move[0] === +col && move[1] === +row) {
+        return this.setState((prevState) => {
+          // move selected piece to new square and empty out current square
+          prevState.board[row][col] = prevState.selectedPiece.id;
+          prevState.board[prevState.selectedPiece.row][
+            prevState.selectedPiece.col
+          ] = 0;
+          // set new current player and set up cards for next turn
+          let newPlayer;
+          let currentCardLoc = prevState.selectedCard.location;
+          if (prevState.currentPlayer === "blue") {
+            newPlayer = "red";
+            prevState.cards.forEach((card) => {
+              if (card.location === 2) {
+                card.location = currentCardLoc;
+              } else if (card === prevState.selectedCard) {
+                card.location = 5;
+              }
+            });
+          } else {
+            newPlayer = "blue";
+            prevState.cards.forEach((card) => {
+              if (card.location === 5) {
+                card.location = currentCardLoc;
+              } else if (card === prevState.selectedCard) {
+                card.location = 2;
+              }
+            });
+          }
+
+          //          3    4
+          //   5  [ redBoard ]
+          //      [ bluBoard ]  2
+          //          0    1
+          //
+          //reset state
+          return {
+            board: [...prevState.board],
+            currentPlayer: newPlayer,
+            selectedCard: {},
+            selectedPiece: {},
+            validMoves: [],
+          };
+        });
+      }
+    });
   };
 
   render() {
@@ -159,16 +213,18 @@ class Game extends Component {
             card1={this.findCardByLoc(3)}
             card2={this.findCardByLoc(4)}
             selectCard={this.selectCard}
+            selectedCard={this.state.selectedCard}
           />
           <Board
             board={this.state.board}
-            selectPiece={this.selectPiece}
+            handleClick={this.handleClick}
             validMoves={this.state.validMoves}
           />
           <PlayerCards
             card1={this.findCardByLoc(0)}
             card2={this.findCardByLoc(1)}
             selectCard={this.selectCard}
+            selectedCard={this.state.selectedCard}
           />
         </div>
         <div className="column is-2 is-offset-2">

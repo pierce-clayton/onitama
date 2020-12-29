@@ -1,13 +1,14 @@
 import React from "react";
-import cobra from "images/cobra.png";
 
-const Card = ({ flip, card, selectCard }) => {
+const Card = ({ flip, card, selectCard, selectedCard = null }) => {
   // prevent error for empty card slot
   if (!card) return null;
 
+  const divClass = selectedCard === card ? "game-card selected" : "game-card";
+
   const imgClass = flip ? "flip-vertical" : "";
   return (
-    <div className="game-card" onClick={() => selectCard(card)}>
+    <div className={divClass} onClick={() => selectCard(card)}>
       <figure className="image game-card is-4by3">
         <img
           src={require(`images/${card.name}.png`)}

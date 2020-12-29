@@ -34,24 +34,28 @@ html {
 }
 .tile.is-ancestor:nth-child(2n + 1) > .tile > .tile.invalid:nth-child(2n),
 .tile.is-ancestor:nth-child(2n) > .tile > .tile.invalid:nth-child(2n + 1) {
-  background-color: rgb(141,168,155, 0.7);
+  background-color: rgba(141,168,155, 0.7);
 }
 
-.game-card {
-width: 7rem
-}
 .column.board {
-  border: 3px inset rgb(43, 42, 42);
+  border: 2px inset rgb(43, 42, 42);
 }
 
 .game-card {
+  width: 7rem;
   border-radius: 6px;
   box-shadow: 0 0.5em 1em -0.125em 0 0px 0 1px 0.02;
+}
+
+.game-card.selected {
+  /* margin: 4px; */
+  box-shadow: 10px 5px 5px rgba(155, 141, 168, 1);
+  /* background-color: rgba(155, 141, 168, 0.8); */
 }
 
 .flip-vertical {
   transform: rotate(0.5turn)
 }
 .tile.valid {
-  background-color: aqua;
+  background-color: rgba(155, 141, 168, 0.8);
 }

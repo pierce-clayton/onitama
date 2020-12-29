@@ -8,14 +8,14 @@ const isValid = (row, col, validMoves) => {
   return squareClass;
 };
 
-const BoardSquare = ({ piece, selectPiece, row, col, validMoves }) => {
+const BoardSquare = ({ piece, handleClick, row, col, validMoves }) => {
   const squareClass = isValid(row, col, validMoves);
   return (
     <div
       className={squareClass}
       data-row={row}
       data-col={col}
-      onClick={selectPiece}
+      onClick={handleClick}
     >
       <figure className="image board-square is-square"></figure>
       <p>{piece}</p>

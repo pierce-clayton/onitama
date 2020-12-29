@@ -1,7 +1,7 @@
 import React from "react";
 import BoardSquare from "./BoardSquare";
 
-const BoardRow = ({ pieces, selectPiece, row, validMoves }) => {
+const BoardRow = ({ pieces, handleClick, row, validMoves }) => {
   return (
     <div className="tile is-ancestor">
       <div className="tile">
@@ -9,7 +9,7 @@ const BoardRow = ({ pieces, selectPiece, row, validMoves }) => {
           <BoardSquare
             key={i}
             piece={piece}
-            selectPiece={selectPiece}
+            handleClick={handleClick}
             row={row}
             col={i}
             validMoves={validMoves}
