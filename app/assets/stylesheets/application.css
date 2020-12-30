@@ -59,3 +59,11 @@ html {
 .tile.valid {
   background-color: rgba(155, 141, 168, 0.8);
 }
+/* set game piece size */
+figure.image.board-square.is-square {
+  width: 3rem;
+}
+/* zenter game piece in board square */
+.is-horizontal-center {
+  justify-content: center;
+}

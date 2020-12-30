@@ -112,7 +112,7 @@ class Game extends Component {
     //restrict starting locations to current piece lcoations
     //############## Update this method once backend is connected#################
     if (
-      currentTarget.textContent[0] === this.state.currentPlayer[0].toUpperCase()
+      currentTarget.dataset.id[0] === this.state.currentPlayer[0].toUpperCase()
     ) {
       // this.setState({ selectPiece: {currentTarget.textContent} });
       this.selectPiece(currentTarget);
@@ -151,7 +151,7 @@ class Game extends Component {
         validMoves.push([x, y]);
       }
     });
-    const id = currentTarget.textContent;
+    const id = currentTarget.dataset.id;
     this.sendValidMoves(validMoves, id, col, row);
   };
 
