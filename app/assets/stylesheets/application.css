@@ -15,17 +15,17 @@
  */
 
 html {
-    height: 100vh;
-    background-image: url(out-bw-fade.png);
-    background-repeat: no-repeat;
-    /* background-size: 70%; */
-    background-position: left bottom;
-    background-color: rgba(0, 0, 0, 0.06);
+  height: 100vh;
+  background-image: url(out-bw-fade.png);
+  background-repeat: no-repeat;
+  background-size: 100%;
+  background-position: left bottom;
+  background-color: rgba(0, 0, 0, 0.06);
+  background-attachment: fixed;
 }
-
-.image {
-    margin: 0 auto;
-    width: 540px;
+.image.logo {
+  margin: 0 auto;
+  width: 30rem;
 }
 
 .foot {
@@ -34,29 +34,38 @@ html {
     text-align: center;
     position: fixed;
 }
-
-.tile.is-ancestor:nth-child(2n + 1)>.tile>.tile.is-child:nth-child(2n),
-.tile.is-ancestor:nth-child(2n)>.tile>.tile.is-child:nth-child(2n + 1) {
-    background-color: #8da897;
-}
-
-.card {
-    height: 80%;
+.tile.is-ancestor:nth-child(2n + 1) > .tile > .tile.invalid:nth-child(2n),
+.tile.is-ancestor:nth-child(2n) > .tile > .tile.invalid:nth-child(2n + 1) {
+  background-color: rgba(141,168,155, 0.7);
 }
 
 .column.board {
-    border: 5px inset black;
+  border: 2px inset rgb(43, 42, 42);
 }
 
 .game-card {
-    border-radius: 6px;
-    box-shadow: 0 0.5em 1em -0.125em 0 0px 0 1px 0.02;
+  width: 7rem;
+  border-radius: 6px;
+  box-shadow: 0 0.5em 1em -0.125em 0 0px 0 1px 0.02;
+}
+
+.game-card.selected {
+  /* margin: 4px; */
+  box-shadow: 10px 5px 5px rgba(155, 141, 168, 1);
+  /* background-color: rgba(155, 141, 168, 0.8); */
 }
 
 .flip-vertical {
-    transform: rotate(0.5turn)
+  transform: rotate(0.5turn)
 }
-
-.valid {
-    background-color: aqua;
+.tile.valid {
+  background-color: rgba(155, 141, 168, 0.8);
+}
+/* set game piece size */
+figure.image.board-square.is-square {
+  width: 3rem;
+}
+/* zenter game piece in board square */
+.is-horizontal-center {
+  justify-content: center;
 }
