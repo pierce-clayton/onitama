@@ -13,6 +13,7 @@
  *= require_tree .
  *= require_self
  */
+
 html {
   height: 100vh;
   background-image: url(out-bw-fade.png);
@@ -26,11 +27,12 @@ html {
   margin: 0 auto;
   width: 30rem;
 }
+
 .foot {
-  left: 0;
-  bottom: 0;
-  text-align: center;
-  position: fixed;
+    left: 0;
+    bottom: 0;
+    text-align: center;
+    position: fixed;
 }
 .tile.is-ancestor:nth-child(2n + 1) > .tile > .tile.invalid:nth-child(2n),
 .tile.is-ancestor:nth-child(2n) > .tile > .tile.invalid:nth-child(2n + 1) {
