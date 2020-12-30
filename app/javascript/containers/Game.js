@@ -237,7 +237,7 @@ class Game extends Component {
 
   //check to see if the current move will end the game
   isGameOver = ({ board, currentPlayer, selectedPiece }, [col, row]) => {
-    // was teh opponenets master peice taken
+    // was the opponenets master peice taken
     if (
       (currentPlayer === "blue" && board[row][col] === "Rm") ||
       (currentPlayer === "red" && board[row][col] === "Bm")
