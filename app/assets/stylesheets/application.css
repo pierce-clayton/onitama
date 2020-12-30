@@ -55,6 +55,10 @@ html {
   /* background-color: rgba(155, 141, 168, 0.8); */
 }
 
+.card-image {
+  border-radius: 7px;
+}
+
 .flip-vertical {
   transform: rotate(0.5turn)
 }

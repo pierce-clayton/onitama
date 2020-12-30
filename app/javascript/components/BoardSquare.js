@@ -53,7 +53,6 @@ const BoardSquare = ({ piece, handleClick, row, col, validMoves }) => {
           />
         ) : null}
       </figure>
-      {/* <p>{piece}</p> */}
     </div>
   );
 };

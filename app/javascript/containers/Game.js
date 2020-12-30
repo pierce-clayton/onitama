@@ -1,9 +1,8 @@
 import React, { Component } from "react";
-import Waiting from "../components/Waiting";
-
 import PlayerCards from "./PlayerCards";
 import Board from "../components/Board";
 import Card from "../components/Card";
+import { CARDS } from "../constants/index";
 
 // for Backend: need piece_id, new pos, card_id
 
@@ -254,6 +253,20 @@ class Game extends Component {
       return false;
     }
   };
+
+  componentDidMount() {
+    // Shuffle cards
+    const shuffled = CARDS.sort(() => 0.5 - Math.random());
+
+    // Get sub-array of first n elements after shuffled
+    let selected = shuffled.slice(0, 5).map((card, i) => {
+      card.location = i;
+      return card;
+    });
+    this.setState({
+      cards: selected,
+    });
+  }
 
   render() {
     return (
