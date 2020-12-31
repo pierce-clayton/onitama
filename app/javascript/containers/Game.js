@@ -19,33 +19,7 @@ class Game extends Component {
       [0, 0, 0, 0, 0],
       ["Bs1", "Bs2", "Bm", "Bs3", "Bs4"],
     ],
-    cards: [
-      {
-        name: "tiger",
-        location: 0,
-        moves: "(0,-1) (0,2)",
-      },
-      {
-        name: "cobra",
-        location: 1,
-        moves: "(-1,0) (1,1) (1,-1)",
-      },
-      {
-        name: "dragon",
-        location: 2,
-        moves: "(-2,1) (2,1) (-1,-1) (1,-1)",
-      },
-      {
-        name: "frog",
-        location: 3,
-        moves: "(1,-1) (-1,1) (-2,0)",
-      },
-      {
-        name: "mantis",
-        location: 4,
-        moves: "(0,-1) (1,1) (-1,1)",
-      },
-    ],
+    cards: [],
   };
 
   // define blue side as default down and left most card of blue team being location 0 increasing counter clockwise
@@ -259,14 +233,25 @@ class Game extends Component {
     const shuffled = CARDS.sort(() => 0.5 - Math.random());
 
     // Get sub-array of first n elements after shuffled
-    let selected = shuffled.slice(0, 5).map((card, i) => {
+    let cards = shuffled.slice(0, 5).map((card, i) => {
       card.location = i;
       return card;
     });
-    this.setState({
-      cards: selected,
-    });
+    this.sendNewDeck(cards);
   }
+
+  //send New Deck of cards to the back end
+  sendNewDeck = (cards) => {
+    console.log("I'm updating the back end with the new deck of cards");
+    this.updateCardsState(cards);
+  };
+
+  // add the new deck of cards into state
+  updateCardsState = (cards) => {
+    this.setState({
+      cards,
+    });
+  };
 
   render() {
     return (
