@@ -1,8 +1,8 @@
 class MatchChannel < ApplicationCable::Channel
   def subscribed
-    user = User.find_by(id: params[:user_id])
-
-    stream_from "Match#{user.id}"
+    puts params
+    user = User.find(params[:user_id])
+    stream_for user
     # stream_from "some_channel"
   end
 

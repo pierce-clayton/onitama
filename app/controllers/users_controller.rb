@@ -9,9 +9,9 @@ class UsersController < ApplicationController
 
   # GET /users/1
   # GET /users/1.json
-  def show
-    render json: @user
-  end
+  # def show
+  #   render json: @user
+  # end
 
   # GET /users/new
   def new
@@ -20,21 +20,21 @@ class UsersController < ApplicationController
 
   # GET /users/1/edit
   def edit
-    render json: @user
+    render json: @user, except: %i[password_digest created_at updated_at]
   end
 
   # POST /users
   # POST /users.json
-  def create
-    @user = User.find_or_create_by(user_params)
+  # def create
+  #   @user = User.find_or_create_by(user_params)
 
-    if @user.save
-      # ActionCable.server.broadcast('GameChannel', @user)
-      render json: @user
-    else
-      render json: @user.error, status: :unprocessable_entity
-    end
-  end
+  #   if @user.save
+  #     # ActionCable.server.broadcast('GameChannel', @user)
+  #     render json: @user
+  #   else
+  #     render json: @user.error, status: :unprocessable_entity
+  #   end
+  # end
 
   # PATCH/PUT /users/1
   # PATCH/PUT /users/1.json

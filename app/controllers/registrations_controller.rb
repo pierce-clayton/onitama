@@ -7,7 +7,7 @@ class RegistrationsController < ApplicationController
       render json: {
         status: :created,
         user: user
-     }
+      }, except: %i[password_digest created_at updated_at]
     else
       render json: { status: 422 }
     end

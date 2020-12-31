@@ -8,14 +8,15 @@ import axios from "axios"
 // import consumer from "../channels/consumer"
 // import { ActionCableConsumer } from 'react-actioncable-provider'
 export default class App extends Component {
-  state = {
-    players: [],
-    game_id: null,
-    game_state: "",
-    winning_user_id: null,
-    user: {},
-    loggedIn: 'NOT_LOGGED_IN',
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      game: {},
+      user: {},
+      loggedIn: 'NOT_LOGGED_IN'
+    }
+  }
+  
   match_channel = {}
   channel = this.props.cableApp.cable.subscriptions.create(
     { channel: "GameChannel" },
@@ -43,34 +44,20 @@ export default class App extends Component {
     }
     if (data.game) {
       this.setState((_) => ({
-        game_id: data.game.id,
-        game_state: data.game.state,
-        winning_user_id: data.game.winning_user_id,
+        game: data.game
       }));
+      this.channel.unsubscribe()
     }
-    if (data.players) {
-      this.setState((_) => ({
-        players: [...data.players],
-      }));
-    }
+    // if (data.players) {
+    //   this.setState((_) => ({
+    //     players: [...data.players],
+    //   }));
+    // }
   };
   whatColor = () => {
-    return this.state.players[0] === this.state.user_name ? "Red" : "Blue";
+    return this.state.game.red_user_id === this.state.user.id ? "Red" : "Blue";
   };
   handleGameStarted = () => {};
-  buildMatchChannel = (name) => {
-    this.match_channel = this.props.cableApp.cable.subscriptions.create({channel: `Match${name}`}, {
-      connected: () => {
-        console.log('connected to match channel ' + name )
-      },
-      received: (data) => {
-        console.log(data)
-      },
-      create: () => {},
-      update: () => {},
-      destroy: () => {}
-    })
-  }
 
   checkLoginStatus = () => {
     axios.get('http://localhost:3000/logged_in', { withCredentials: true })
@@ -92,15 +79,15 @@ export default class App extends Component {
 
   handleLogin = (data) => {
     this.setState({ loggedIn: 'LOGGED_IN', user: data.user });
-    this.match_channel = this.props.cableApp.cable.subscriptions.create({channel: 'MatchChannel', user_id: data.user.id},
-    {
-      connected: () => {},
-      received: (data) => {
-        if(data.message){
-          console.log(data.message)
-        }
-      }
-    })
+    // this.match_channel = this.props.cableApp.cable.subscriptions.create({channel: 'MatchChannel', user_id: data.user.id},
+    // {
+    //   connected: () => {},
+    //   received: (data) => {
+    //     if(data.message){
+    //       console.log(data.message)
+    //     }
+    //   }
+    // })
     this.channel.perform('joined_game', data.user)
   };
   handleLogout = () => {
@@ -112,11 +99,6 @@ export default class App extends Component {
   render() {
     return (
       <div>
-        {this.state.loggedIn && (
-          <NavLink exact to="/onitama">
-            Begin Game
-          </NavLink>
-        )}
         <Switch>
           {/* <Route exact path="/login"> */}
           <Route exact path="/" render={props => (
@@ -142,13 +124,17 @@ export default class App extends Component {
             user={this.state.user}
             />
           )} />
-          <Route exact path="/onitama">
-            <Game
-              cable={this.props.cableApp.cable}
-              gameStarted={this.handleGameStarted}
-              game={this.state}
-            />
-          </Route>
+          <Route exact path="/onitama" render={props => (
+          <Game
+          {...props}
+          cable={this.props.cableApp.cable}
+          gameStarted={this.handleGameStarted}
+          game={this.state.game}
+          user={this.state.user}
+          userColor={this.whatColor()}
+          />
+          )} 
+          />
         </Switch>
         <div className="foot">
           <p>

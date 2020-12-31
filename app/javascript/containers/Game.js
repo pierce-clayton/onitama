@@ -8,46 +8,60 @@ import Card from "../components/Card";
 // for Backend: need piece_id, new pos, card_id
 
 class Game extends Component {
-  state = {
-    currentPlayer: "blue",
-    selectedCard: {},
-    selectedPiece: {},
-    validMoves: [],
-    board: [
-      ["Rs1", "Rs2", "Rm", "Rs3", "Rs4"],
-      [0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0],
-      ["Bs1", "Bs2", "Bm", "Bs3", "Bs4"],
-    ],
-    cards: [
-      {
-        name: "tiger",
-        location: 0,
-        moves: "(0,-1) (0,2)",
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      currentPlayer: "blue",
+      selectedCard: {},
+      selectedPiece: {},
+      validMoves: [],
+      board: [
+        ["Rs1", "Rs2", "Rm", "Rs3", "Rs4"],
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        ["Bs1", "Bs2", "Bm", "Bs3", "Bs4"],
+      ],
+      cards: [
+        {
+          name: "tiger",
+          location: 0,
+          moves: "(0,-1) (0,2)",
+        },
+        {
+          name: "cobra",
+          location: 1,
+          moves: "(-1,0) (1,1) (1,-1)",
+        },
+        {
+          name: "dragon",
+          location: 2,
+          moves: "(-2,1) (2,1) (-1,-1) (1,-1)",
+        },
+        {
+          name: "frog",
+          location: 3,
+          moves: "(1,-1) (-1,1) (-2,0)",
+        },
+        {
+          name: "mantis",
+          location: 4,
+          moves: "(0,-1) (1,1) (-1,1)",
+        },
+      ]
+    }
+    this.match_channel = props.cable.subscriptions.create({channel: `MatchChannel`, user_id: props.user.id}, {
+      connected: () => {
+        console.log('connected to match channel')
       },
-      {
-        name: "cobra",
-        location: 1,
-        moves: "(-1,0) (1,1) (1,-1)",
-      },
-      {
-        name: "dragon",
-        location: 2,
-        moves: "(-2,1) (2,1) (-1,-1) (1,-1)",
-      },
-      {
-        name: "frog",
-        location: 3,
-        moves: "(1,-1) (-1,1) (-2,0)",
-      },
-      {
-        name: "mantis",
-        location: 4,
-        moves: "(0,-1) (1,1) (-1,1)",
-      },
-    ],
-  };
+      received: (data) => {
+        console.log(data)
+      }
+    })
+  }
+
+  
 
   // define blue side as default down and left most card of blue team being location 0 increasing counter clockwise
   // with the exception that the cards on the top being reversed:
