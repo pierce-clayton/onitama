@@ -5,13 +5,15 @@ import Game from "../containers/Game";
 import Home from "./Home"
 import Dashboard from "./Dashboard"
 import axios from "axios"
+import {reactLocalStorage} from 'reactjs-localstorage'
 // import consumer from "../channels/consumer"
 // import { ActionCableConsumer } from 'react-actioncable-provider'
 export default class App extends Component {
   constructor(props) {
     super(props);
+    
     this.state = {
-      game: {},
+      game: reactLocalStorage.getObject('game') || {},
       user: {},
       loggedIn: 'NOT_LOGGED_IN'
     }
@@ -23,8 +25,8 @@ export default class App extends Component {
     {
       connected: () => this.handleConnected(),
       received: (data) => this.handleReceived(data),
-      joined_game: () => {
-        this.channel.perform("joined_game", { user: this.state.user });
+      joined_game: (user) => {
+        this.channel.perform("joined_game", {user: user});
       },
       start: (players) => {
         this.channel.perform("start", [...players]);
@@ -43,10 +45,7 @@ export default class App extends Component {
       console.log(data.message);
     }
     if (data.game) {
-      this.setState((_) => ({
-        game: data.game
-      }));
-      this.channel.unsubscribe()
+      this.handleGameStarted(data.game)
     }
     // if (data.players) {
     //   this.setState((_) => ({
@@ -57,7 +56,20 @@ export default class App extends Component {
   whatColor = () => {
     return this.state.game.red_user_id === this.state.user.id ? "Red" : "Blue";
   };
-  handleGameStarted = () => {};
+  handleGameStarted = (game) => {
+    reactLocalStorage.setObject('game', game)
+    this.setState((_) => ({
+      game: game
+    }));
+    this.channel.unsubscribe()
+  };
+
+  handleGameWon = (game) => {
+    this.setState((_) => ({
+      game: {}
+    }));
+    reactLocalStorage.clear()
+  }
 
   checkLoginStatus = () => {
     axios.get('http://localhost:3000/logged_in', { withCredentials: true })
@@ -79,22 +91,14 @@ export default class App extends Component {
 
   handleLogin = (data) => {
     this.setState({ loggedIn: 'LOGGED_IN', user: data.user });
-    // this.match_channel = this.props.cableApp.cable.subscriptions.create({channel: 'MatchChannel', user_id: data.user.id},
-    // {
-    //   connected: () => {},
-    //   received: (data) => {
-    //     if(data.message){
-    //       console.log(data.message)
-    //     }
-    //   }
-    // })
-    this.channel.perform('joined_game', data.user)
+    this.channel.joined_game(data.user)
   };
   handleLogout = () => {
     this.setState({
       loggedIn: 'NOT_LOGGED_IN',
       user: {}
     })
+    reactLocalStorage.clear()
   }
   render() {
     return (

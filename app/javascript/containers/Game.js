@@ -56,7 +56,12 @@ class Game extends Component {
         console.log('connected to match channel')
       },
       received: (data) => {
-        console.log(data)
+        if (data.message){
+          console.log(data.message)
+        }
+        if (data.game){
+          this.props.gameStarted(data.game)
+        }
       }
     })
   }
