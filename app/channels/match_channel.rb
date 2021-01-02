@@ -10,14 +10,17 @@ class MatchChannel < ApplicationCable::Channel
   end
 
   def sendSelectedCard(card)
-    broadcast_to @game, card
+    broadcast_to @game, card: card['newCard']
   end
 
   def sendValidMoves(moves)
-    broadcast_to @game, moves
+    broadcast_to @game, moves['newMoves']
   end
 
-  def sendMove(move)
-    broadcast_to @game, move
+  def sendMove(board)
+    puts '*' * 30
+    @game.moves.create!(board: board['sendMove']['prevState']['board'])
+    puts @game.moves.last
+    broadcast_to @game, board
   end
 end

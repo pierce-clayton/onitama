@@ -53,7 +53,7 @@ class Game extends Component {
     }
     this.match_channel = props.cable.subscriptions.create({channel: `MatchChannel`, game_id: props.game.id}, {
       connected: () => {
-        console.log('connected to match channel ' + props.game)
+        console.log('connected to match channel ')
       },
       received: (data) => {
         // console.log(data)
@@ -77,8 +77,8 @@ class Game extends Component {
       sendValidMoves: (validMoves) => {
         this.match_channel.perform('sendValidMoves', validMoves)
       },
-      sendMove: (move) => {
-        this.match_channel.perform('sendValidMoves', move)
+      sendMove: (board) => {
+        this.match_channel.perform('sendMove', board)
       }
     })
     
@@ -118,7 +118,7 @@ class Game extends Component {
   //send selectedcard info to the backend
   sendSelectedCard = (selectedCard) => {
     // console.log("I'll send selectedCard and reset valid moves to the backend");
-    this.match_channel.sendSelectedCard({card: selectedCard})
+    this.match_channel.sendSelectedCard({newCard: selectedCard})
   };
 
   //update selectedCard state with response from action cable
@@ -196,7 +196,7 @@ class Game extends Component {
     // console.log(
     //   "I'll send the current piece and associated valid moves to the backend!"
     // );
-    this.match_channel.sendValidMoves({validMoves: {validMoves: validMoves, id: id, col: col, row: row}});
+    this.match_channel.sendValidMoves({newMoves: {validMoves: {validMoves: validMoves, id: id, col: col, row: row}}});
     // this.updateValidMoves(validMoves, id, col, row);
   };
 
