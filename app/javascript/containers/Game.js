@@ -8,46 +8,89 @@ import Card from "../components/Card";
 // for Backend: need piece_id, new pos, card_id
 
 class Game extends Component {
-  state = {
-    currentPlayer: "blue",
-    selectedCard: {},
-    selectedPiece: {},
-    validMoves: [],
-    board: [
-      ["Rs1", "Rs2", "Rm", "Rs3", "Rs4"],
-      [0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0],
-      ["Bs1", "Bs2", "Bm", "Bs3", "Bs4"],
-    ],
-    cards: [
-      {
-        name: "tiger",
-        location: 0,
-        moves: "(0,-1) (0,2)",
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      currentPlayer: "blue",
+      selectedCard: {},
+      selectedPiece: {},
+      validMoves: [],
+      board: [
+        ["Rs1", "Rs2", "Rm", "Rs3", "Rs4"],
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        ["Bs1", "Bs2", "Bm", "Bs3", "Bs4"],
+      ],
+      cards: [
+        {
+          name: "tiger",
+          location: 0,
+          moves: "(0,-1) (0,2)",
+        },
+        {
+          name: "cobra",
+          location: 1,
+          moves: "(-1,0) (1,1) (1,-1)",
+        },
+        {
+          name: "dragon",
+          location: 2,
+          moves: "(-2,1) (2,1) (-1,-1) (1,-1)",
+        },
+        {
+          name: "frog",
+          location: 3,
+          moves: "(1,-1) (-1,1) (-2,0)",
+        },
+        {
+          name: "mantis",
+          location: 4,
+          moves: "(0,-1) (1,1) (-1,1)",
+        },
+      ]
+    }
+    this.opponent_id = props.game.red_user_id === props.user.id ? props.game.red_user_id : props.game.blue_user_id
+    this.match_channel = {}
+    
+  }
+  
+  componentDidMount = () => {
+    this.match_channel = this.props.cable.subscriptions.create({channel: `MatchChannel`, game_id: this.props.game.id}, {
+      connected: () => {
+        console.log('connected to match channel ' + this.props.game)
       },
-      {
-        name: "cobra",
-        location: 1,
-        moves: "(-1,0) (1,1) (1,-1)",
+      received: (data) => {
+        // console.log(data)
+        if (data.message){
+          console.log(data.message)
+        }
+        if (data.game){
+          this.props.gameStarted(data.game)
+        }
+        if (data.card){
+          this.updateSelectedCardState(data.card);
+        }
+        if (data.validMoves){
+          // console.log(data.validMoves)
+          this.updateValidMoves(data.validMoves);
+        } 
+        if (data.sendMove){
+          this.sendMove(data.sendMove)
+        }
       },
-      {
-        name: "dragon",
-        location: 2,
-        moves: "(-2,1) (2,1) (-1,-1) (1,-1)",
+      sendSelectedCard: (card) => {
+        this.match_channel.perform('sendSelectedCard', card)
       },
-      {
-        name: "frog",
-        location: 3,
-        moves: "(1,-1) (-1,1) (-2,0)",
+      sendValidMoves: (validMoves) => {
+        this.match_channel.perform('sendValidMoves', validMoves)
       },
-      {
-        name: "mantis",
-        location: 4,
-        moves: "(0,-1) (1,1) (-1,1)",
-      },
-    ],
-  };
+      sendMove: (move) => {
+        this.match_channel.perform('sendValidMoves', move)
+      }
+    })
+  }
 
   // define blue side as default down and left most card of blue team being location 0 increasing counter clockwise
   // with the exception that the cards on the top being reversed:
@@ -81,8 +124,8 @@ class Game extends Component {
 
   //send selectedcard info to the backend
   sendSelectedCard = (selectedCard) => {
-    console.log("I'll send selectedCard and reset valid moves to the backend");
-    this.updateSelectedCardState(selectedCard);
+    // console.log("I'll send selectedCard and reset valid moves to the backend");
+    this.match_channel.sendSelectedCard({card: selectedCard})
   };
 
   //update selectedCard state with response from action cable
@@ -157,13 +200,14 @@ class Game extends Component {
 
   //send vaild moves associated with a selectedPiece to the backend
   sendValidMoves = (validMoves, id, col, row) => {
-    console.log(
-      "I'll send the current piece and associated valid moves to the backend!"
-    );
-    this.updateValidMoves(validMoves, id, col, row);
+    // console.log(
+    //   "I'll send the current piece and associated valid moves to the backend!"
+    // );
+    this.match_channel.sendValidMoves({validMoves: {validMoves: validMoves, id: id, col: col, row: row}});
+    // this.updateValidMoves(validMoves, id, col, row);
   };
 
-  updateValidMoves = (validMoves, id, col, row) => {
+  updateValidMoves = ({validMoves, id, col, row}) => {
     this.setState({
       validMoves,
       selectedPiece: { id, col, row },
@@ -214,25 +258,25 @@ class Game extends Component {
 
           //reset state
           //
-          return this.sendMove(prevState, newPlayer);
+          this.match_channel.sendMove({sendMove: {prevState, newPlayer}})
+          // return this.sendMove(prevState, newPlayer);
         });
       }
     });
   };
 
   //update board after a move is made on the backend
-  sendMove(prevState, newPlayer) {
-    console.log(
-      "I'm sending the new board and card state and new current player to teh backend "
-    );
-    return {
-      board: [...prevState.board],
-      currentPlayer: newPlayer,
-      selectedCard: {},
-      selectedPiece: {},
-      validMoves: [],
-      cards: [...prevState.cards],
-    };
+  sendMove({prevState, newPlayer}) {
+    this.setState(() => {
+      return {
+        board: [...prevState.board],
+        currentPlayer: newPlayer,
+        selectedCard: {},
+        selectedPiece: {},
+        validMoves: [],
+        cards: [...prevState.cards],
+      };
+    })
   }
 
   //check to see if the current move will end the game

@@ -9,33 +9,29 @@ class GameChannel < ApplicationCable::Channel
   end
 
   def joined_game(user)
-    @@match.length == 2 ? (@@match = []) : nil
+    # need to handle when players have an active game
     @user = User.find(user['id'])
-    @@match << @user unless @@match.include?(@user)
-    if @@match.length == 2
-      start(@@match[0], @@match[1])
+    last_game = @user.games.last
+    if last_game.winning_user_id.nil?
+      ActionCable.server.broadcast 'GameChannel', game: last_game
     else
-      ActionCable.server.broadcast "Match#{@user[:id]}", { message: 'waiting for opponent' }
+      @@match.length == 2 ? (@@match = []) : nil
+      @@match << @user unless @@match.include?(@user)
+      if @@match.length == 2
+        start(@@match[0], @@match[1])
+      else
+        puts 'Waiting for opponent...'
+      end
     end
   end
 
   def start(player1, player2)
-    game = Game.create(red_user_id: player1[:id], blue_user_id: player2[:id], state: 'start', winning_user_id: nil)
-    ActionCable.server.broadcast 'GameChannel', { game: game }
-    ActionCable.server.broadcast "Match#{player1[:id]}", { message: 'Match started Red Player'}
-    ActionCable.server.broadcast "Match#{player2[:id]}", { message: 'Match started Blue Player'}
+    game = Game.create!(red_user: player1, blue_user: player2, state: 'start', winning_user_id: nil)
+    ActionCable.server.broadcast 'GameChannel', game: game
   end
 
-  def build_board(game)
-    
-  end
-
-  def log_txt
-    puts 'log txt'
-  end
 
   def unsubscribed
-    stop_all_streams
     # raise NotImplementedError
     # Any cleanup needed when channel is unsubscribed
   end

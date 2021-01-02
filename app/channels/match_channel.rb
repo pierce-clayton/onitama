@@ -1,13 +1,23 @@
 class MatchChannel < ApplicationCable::Channel
   def subscribed
-    user = User.find_by(id: params[:user_id])
-
-    stream_from "Match#{user.id}"
+    @game = Game.find(params[:game_id])
+    stream_for @game if @game
     # stream_from "some_channel"
   end
 
   def unsubscribed
-    stop_all_streams
     # Any cleanup needed when channel is unsubscribed
+  end
+
+  def sendSelectedCard(card)
+    broadcast_to @game, card
+  end
+
+  def sendValidMoves(moves)
+    broadcast_to @game, moves
+  end
+
+  def sendMove(move)
+    broadcast_to @game, move
   end
 end

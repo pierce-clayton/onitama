@@ -5,29 +5,29 @@ import Game from "../containers/Game";
 import Home from "./Home"
 import Dashboard from "./Dashboard"
 import axios from "axios"
+import {reactLocalStorage} from 'reactjs-localstorage'
 // import consumer from "../channels/consumer"
 // import { ActionCableConsumer } from 'react-actioncable-provider'
 export default class App extends Component {
-  state = {
-    players: [],
-    game_id: null,
-    game_state: "",
-    winning_user_id: null,
-    user: {},
-    loggedIn: 'NOT_LOGGED_IN',
-  };
+  constructor(props) {
+    super(props);
+    
+    this.state = {
+      game: reactLocalStorage.getObject('game') || {},
+      user: {},
+      loggedIn: 'NOT_LOGGED_IN'
+    }
+  }
+  
   match_channel = {}
   channel = this.props.cableApp.cable.subscriptions.create(
     { channel: "GameChannel" },
     {
       connected: () => this.handleConnected(),
       received: (data) => this.handleReceived(data),
-      joined_game: () => {
-        this.channel.perform("joined_game", { user: this.state.user });
-      },
-      start: (players) => {
-        this.channel.perform("start", [...players]);
-      },
+      joined_game: (data) => {
+        this.channel.perform("joined_game", data.user);
+      }
     }
   );
   componentDidMount = () => {
@@ -42,34 +42,30 @@ export default class App extends Component {
       console.log(data.message);
     }
     if (data.game) {
-      this.setState((_) => ({
-        game_id: data.game.id,
-        game_state: data.game.state,
-        winning_user_id: data.game.winning_user_id,
-      }));
+      this.handleGameStarted(data.game)
     }
-    if (data.players) {
-      this.setState((_) => ({
-        players: [...data.players],
-      }));
-    }
+    // if (data.players) {
+    //   this.setState((_) => ({
+    //     players: [...data.players],
+    //   }));
+    // }
   };
   whatColor = () => {
-    return this.state.players[0] === this.state.user_name ? "Red" : "Blue";
+    return this.state.game.red_user_id === this.state.user.id ? "Red" : "Blue";
   };
-  handleGameStarted = () => {};
-  buildMatchChannel = (name) => {
-    this.match_channel = this.props.cableApp.cable.subscriptions.create({channel: `Match${name}`}, {
-      connected: () => {
-        console.log('connected to match channel ' + name )
-      },
-      received: (data) => {
-        console.log(data)
-      },
-      create: () => {},
-      update: () => {},
-      destroy: () => {}
-    })
+  handleGameStarted = (game) => {
+    reactLocalStorage.setObject('game', game)
+    this.setState((_) => ({
+      game: game
+    }));
+    // this.channel.unsubscribe()
+  };
+
+  handleGameWon = (game) => {
+    this.setState((_) => ({
+      game: {}
+    }));
+    reactLocalStorage.clear()
   }
 
   checkLoginStatus = () => {
@@ -92,31 +88,18 @@ export default class App extends Component {
 
   handleLogin = (data) => {
     this.setState({ loggedIn: 'LOGGED_IN', user: data.user });
-    this.match_channel = this.props.cableApp.cable.subscriptions.create({channel: 'MatchChannel', user_id: data.user.id},
-    {
-      connected: () => {},
-      received: (data) => {
-        if(data.message){
-          console.log(data.message)
-        }
-      }
-    })
-    this.channel.perform('joined_game', data.user)
+    this.channel.joined_game(data)
   };
   handleLogout = () => {
     this.setState({
       loggedIn: 'NOT_LOGGED_IN',
       user: {}
     })
+    reactLocalStorage.clear()
   }
   render() {
     return (
       <div>
-        {this.state.loggedIn && (
-          <NavLink exact to="/onitama">
-            Begin Game
-          </NavLink>
-        )}
         <Switch>
           {/* <Route exact path="/login"> */}
           <Route exact path="/" render={props => (
@@ -142,13 +125,17 @@ export default class App extends Component {
             user={this.state.user}
             />
           )} />
-          <Route exact path="/onitama">
-            <Game
-              cable={this.props.cableApp.cable}
-              gameStarted={this.handleGameStarted}
-              game={this.state}
-            />
-          </Route>
+          <Route exact path="/onitama" render={props => (
+          <Game
+          {...props}
+          cable={this.props.cableApp.cable}
+          gameStarted={this.handleGameStarted}
+          game={this.state.game}
+          user={this.state.user}
+          userColor={this.whatColor()}
+          />
+          )} 
+          />
         </Switch>
         <div className="foot">
           <p>
