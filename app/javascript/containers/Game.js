@@ -7,20 +7,44 @@ import { CARDS } from "../constants/index";
 // for Backend: need piece_id, new pos, card_id
 
 class Game extends Component {
-  state = {
-    currentPlayer: "blue",
-    selectedCard: {},
-    selectedPiece: {},
-    validMoves: [],
-    board: [
-      ["Rs1", "Rs2", "Rm", "Rs3", "Rs4"],
-      [0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0],
-      ["Bs1", "Bs2", "Bm", "Bs3", "Bs4"],
-    ],
-    cards: [],
-  };
+  constructor() {
+    super();
+
+    // this.playedCard = nul;
+    // this.setTextInputRef = element => {
+    //   this.textInput = element;
+    // };
+
+    this.state = {
+      currentPlayer: "blue",
+      selectedCard: {},
+      selectedPiece: {},
+      validMoves: [],
+      board: [
+        ["Rs1", "Rs2", "Rm", "Rs3", "Rs4"],
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        ["Bs1", "Bs2", "Bm", "Bs3", "Bs4"],
+      ],
+      cards: [],
+      transition: {
+        startAnim: true,
+        playerCard: {
+          card: {},
+          startTop: 0,
+          startRight: 0,
+          startOrientation: 0,
+        },
+        nextCard: {
+          card: {},
+          startTop: 0,
+          startRight: 0,
+          startOrientation: 0,
+        },
+      },
+    };
+  }
 
   // define blue side as default down and left most card of blue team being location 0 increasing counter clockwise
   // with the exception that the cards on the top being reversed:
@@ -80,7 +104,7 @@ class Game extends Component {
 
   //handle click on the board
   handleClick = ({ currentTarget }) => {
-    if (!this.state.selectedCard) return null;
+    if (!this.state.selectedCard.name) return null;
 
     //restrict starting locations to current piece lcoations
     //############## Update this method once backend is connected#################
@@ -144,8 +168,8 @@ class Game extends Component {
   };
 
   //move piece to selected valid location
-  movePiece = ({ dataset }) => {
-    const { row, col } = dataset;
+  movePiece = (currentTarget) => {
+    const { row, col } = currentTarget.dataset;
 
     this.state.validMoves.forEach((move) => {
       if (move[0] === +col && move[1] === +row) {
@@ -160,8 +184,10 @@ class Game extends Component {
           // set new current player and set up cards for next turn
           let newPlayer;
           let currentCardLoc = prevState.selectedCard.location;
+          let cardRef = currentCardLoc;
           if (prevState.currentPlayer === "blue") {
             newPlayer = "red";
+            prevState.transition.nextCard.card = this.findCardByLoc(2);
             prevState.cards.forEach((card) => {
               if (card.location === 2) {
                 card.location = currentCardLoc;
@@ -171,6 +197,7 @@ class Game extends Component {
             });
           } else {
             newPlayer = "blue";
+            prevState.transition.nextCard.card = this.findCardByLoc(5);
             prevState.cards.forEach((card) => {
               if (card.location === 5) {
                 card.location = currentCardLoc;
@@ -184,9 +211,81 @@ class Game extends Component {
           // for backend:
           // Piece and end location
           //
+          //reset state'
+          let ref;
+          switch (cardRef) {
+            case 0:
+              ref = this.cardRef0;
+              break;
+            case 1:
+              ref = this.cardRef1;
+              break;
+            case 3:
+              ref = this.cardRef3;
+              break;
+            case 4:
+              ref = this.cardRef4;
+              break;
+          }
 
-          //reset state
-          //
+          let destinationCardTop;
+          let destinationCardRight;
+          let playerStartOrientation;
+          let nextStartTop;
+          let nextStartRight;
+          if (prevState.currentPlayer === "blue") {
+            destinationCardTop =
+              this.cardRef5.getBoundingClientRect().top +
+              document.documentElement.scrollTop;
+            destinationCardRight = this.cardRef5.getBoundingClientRect().right;
+
+            nextStartTop =
+              this.cardRef2.getBoundingClientRect().top +
+              document.documentElement.scrollTop;
+
+            nextStartRight = this.cardRef2.getBoundingClientRect().right;
+
+            playerStartOrientation = 0;
+          } else {
+            destinationCardTop =
+              this.cardRef2.getBoundingClientRect().top +
+              document.documentElement.scrollTop;
+            destinationCardRight = this.cardRef2.getBoundingClientRect().right;
+
+            nextStartTop =
+              this.cardRef5.getBoundingClientRect().top +
+              document.documentElement.scrollTop;
+
+            nextStartRight = this.cardRef5.getBoundingClientRect().right;
+
+            playerStartOrientation = 0.5;
+          }
+          const startingCardTop =
+            ref.getBoundingClientRect().top +
+            document.documentElement.scrollTop -
+            destinationCardTop;
+
+          const startingCardRight =
+            ref.getBoundingClientRect().right - destinationCardRight;
+
+          prevState.transition.startAnim = false;
+          prevState.transition.playerCard.startTop = startingCardTop;
+          prevState.transition.playerCard.startRight = startingCardRight;
+          prevState.transition.playerCard.startOrientation = playerStartOrientation;
+          prevState.transition.playerCard.card = prevState.selectedCard;
+
+          prevState.transition.nextCard.startTop =
+            nextStartTop -
+            ref.getBoundingClientRect().top -
+            document.documentElement.scrollTop;
+
+          prevState.transition.nextCard.startRight =
+            nextStartRight - ref.getBoundingClientRect().right;
+
+          prevState.transition.nextCard.startOrientation = playerStartOrientation;
+
+          console.log(prevState.transition.nextCard.card);
+
           return this.sendMove(prevState, newPlayer);
         });
       }
@@ -198,6 +297,9 @@ class Game extends Component {
     console.log(
       "I'm sending the new board and card state and new current player to teh backend "
     );
+    // return {
+    //   transition
+    // }
     return {
       board: [...prevState.board],
       currentPlayer: newPlayer,
@@ -205,6 +307,7 @@ class Game extends Component {
       selectedPiece: {},
       validMoves: [],
       cards: [...prevState.cards],
+      transition: prevState.transition,
     };
   }
 
@@ -253,11 +356,31 @@ class Game extends Component {
     });
   };
 
+  componentDidUpdate() {
+    if (!this.state.transition.startAnim) {
+      setTimeout(() => {
+        this.setState({
+          transition: {
+            ...this.state.transition,
+            startAnim: true,
+          },
+        });
+      }, 500);
+    }
+  }
+  // set new starting location only on outter div, all in one. Then use above state change to animate inner divs back using steps.
+
+  // resetAnimationState = () => {
+  //   ,
+  // };
+
   render() {
     return (
       <div className="columns is-mobile is-vcentered game">
         <div className="column is-1 is-offset-1">
           <Card
+            transition={this.state.transition}
+            cardRef={(el) => (this.cardRef5 = el)}
             flip={true}
             card={this.findCardByLoc(5)}
             selectCard={this.selectCard}
@@ -265,6 +388,9 @@ class Game extends Component {
         </div>
         <div className="column is-4">
           <PlayerCards
+            transition={this.state.transition}
+            cardRefL={(el) => (this.cardRef3 = el)}
+            cardRefR={(el) => (this.cardRef4 = el)}
             flip={true}
             card1={this.findCardByLoc(3)}
             card2={this.findCardByLoc(4)}
@@ -272,11 +398,15 @@ class Game extends Component {
             selectedCard={this.state.selectedCard}
           />
           <Board
+            transition={this.state.transition}
             board={this.state.board}
             handleClick={this.handleClick}
             validMoves={this.state.validMoves}
           />
           <PlayerCards
+            transition={this.state.transition}
+            cardRefL={(el) => (this.cardRef0 = el)}
+            cardRefR={(el) => (this.cardRef1 = el)}
             card1={this.findCardByLoc(0)}
             card2={this.findCardByLoc(1)}
             selectCard={this.selectCard}
@@ -284,7 +414,12 @@ class Game extends Component {
           />
         </div>
         <div className="column is-2 is-offset-2">
-          <Card card={this.findCardByLoc(2)} selectCard={this.selectCard} />
+          <Card
+            transition={this.state.transition}
+            cardRef={(el) => (this.cardRef2 = el)}
+            card={this.findCardByLoc(2)}
+            selectCard={this.selectCard}
+          />
         </div>
       </div>
     );

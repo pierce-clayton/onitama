@@ -44,15 +44,14 @@ html {
 }
 
 .game-card {
+  transition: transform 0s;
   width: 7rem;
   border-radius: 6px;
   box-shadow: 0 0.5em 1em -0.125em 0 0px 0 1px 0.02;
 }
 
 .game-card.selected {
-  /* margin: 4px; */
   box-shadow: 10px 5px 5px rgba(155, 141, 168, 1);
-  /* background-color: rgba(155, 141, 168, 0.8); */
 }
 
 .card-image {
@@ -69,7 +68,44 @@ html {
 figure.image.board-square.is-square {
   width: 3rem;
 }
-/* zenter game piece in board square */
+/* center game piece in board square */
 .is-horizontal-center {
   justify-content: center;
+}
+
+/* Coerce a card into it's final position */
+.player-force-move-x {
+  transition: transform 1s;
+  transform: translate(0) !important;
+}
+
+.player-force-move-r {
+  transition: transform 0.5s;
+  transition-delay: 1s;
+  transform: rotate(0) !important;
+}
+
+
+.player-force-move-y {
+  transition: transform 1.5s;
+  transition-delay: 1.5s;
+  transform: translateY(0) !important;
+}
+
+.next-force-move-x {
+  transition: transform 1s;
+  transition-delay: 1.5s;
+  transform: translate(0) !important;
+}
+
+.next-force-move-r {
+  transition: transform 0.5s;
+  transition-delay: 1s;
+  transform: rotate(0) !important;
+}
+
+
+.next-force-move-y {
+  transition: transform 1.5s;
+  transform: translateY(0) !important;
 }
