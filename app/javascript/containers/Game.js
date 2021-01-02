@@ -51,23 +51,14 @@ class Game extends Component {
         },
       ]
     }
-    this.opponent_id = props.game.red_user_id === props.user.id ? props.game.red_user_id : props.game.blue_user_id
-    this.match_channel = {}
-    
-  }
-  
-  componentDidMount = () => {
-    this.match_channel = this.props.cable.subscriptions.create({channel: `MatchChannel`, game_id: this.props.game.id}, {
+    this.match_channel = props.cable.subscriptions.create({channel: `MatchChannel`, game_id: props.game.id}, {
       connected: () => {
-        console.log('connected to match channel ' + this.props.game)
+        console.log('connected to match channel ' + props.game)
       },
       received: (data) => {
         // console.log(data)
         if (data.message){
           console.log(data.message)
-        }
-        if (data.game){
-          this.props.gameStarted(data.game)
         }
         if (data.card){
           this.updateSelectedCardState(data.card);
@@ -90,7 +81,9 @@ class Game extends Component {
         this.match_channel.perform('sendValidMoves', move)
       }
     })
+    
   }
+  
 
   // define blue side as default down and left most card of blue team being location 0 increasing counter clockwise
   // with the exception that the cards on the top being reversed:

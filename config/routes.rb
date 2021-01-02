@@ -5,5 +5,5 @@ Rails.application.routes.draw do
   get :logged_in, to: 'sessions#logged_in'
   root 'pages#index'
   match '*path', to: 'pages#index', via: :all
-  mount ActionCable.server => '/cable'
+  # mount ActionCable.server => '/cable'
 end
