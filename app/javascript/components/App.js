@@ -6,8 +6,8 @@ import Home from "./Home"
 import Dashboard from "./Dashboard"
 import axios from "axios"
 import {reactLocalStorage} from 'reactjs-localstorage'
-// import consumer from "../channels/consumer"
-// import { ActionCableConsumer } from 'react-actioncable-provider'
+import Waiting from "./Waiting"
+
 export default class App extends Component {
   constructor(props) {
     super(props);
@@ -19,11 +19,9 @@ export default class App extends Component {
     }
   }
   
-  match_channel = {}
   channel = this.props.cableApp.cable.subscriptions.create(
     { channel: "GameChannel" },
     {
-      connected: () => this.handleConnected(),
       received: (data) => this.handleReceived(data),
       joined_game: (data) => {
         this.channel.perform("joined_game", data.user);
@@ -33,10 +31,7 @@ export default class App extends Component {
   componentDidMount = () => {
     this.checkLoginStatus()
   }
-  handleConnected = () => {
-    // return channel.perform('get_match_channel', { user_id: })
-    // console.log('handle_connected')
-  };
+
   handleReceived = (data) => {
     if (data.message) {
       console.log(data.message);
@@ -44,20 +39,13 @@ export default class App extends Component {
     if (data.game) {
       this.handleGameStarted(data.game)
     }
-    // if (data.players) {
-    //   this.setState((_) => ({
-    //     players: [...data.players],
-    //   }));
-    // }
   };
   whatColor = () => {
     return this.state.game.red_user_id === this.state.user.id ? "Red" : "Blue";
   };
   handleGameStarted = (game) => {
+    this.setState({ game: game });
     reactLocalStorage.setObject('game', game)
-    this.setState((_) => ({
-      game: game
-    }));
     // this.channel.unsubscribe()
   };
 
@@ -91,11 +79,11 @@ export default class App extends Component {
     this.channel.joined_game(data)
   };
   handleLogout = () => {
+    reactLocalStorage.clear()
     this.setState({
       loggedIn: 'NOT_LOGGED_IN',
       user: {}
     })
-    reactLocalStorage.clear()
   }
   render() {
     return (
@@ -125,16 +113,16 @@ export default class App extends Component {
             user={this.state.user}
             />
           )} />
-          <Route exact path="/onitama" render={props => (
-          <Game
-          {...props}
-          cable={this.props.cableApp.cable}
-          gameStarted={this.handleGameStarted}
-          game={this.state.game}
-          user={this.state.user}
-          userColor={this.whatColor()}
-          />
-          )} 
+          <Route exact path="/onitama" render={props => (                
+                <Game
+                  {...props}
+                  cable={this.props.cableApp.cable}
+                  gameStarted={this.handleGameStarted}
+                  game={this.state.game}
+                  user={this.state.user}
+                  userColor={this.whatColor()}
+                  />
+              )}                 
           />
         </Switch>
         <div className="foot">
@@ -146,10 +134,3 @@ export default class App extends Component {
     );
   }
 }
-
-{/* <LogIn handleLogin={this.handleLogin}/>   */}
-            {/* <LandingPage
-              handleLogin={this.handleLogin}
-              user_name={this.state.user_name}
-              playerColor={this.whatColor()}
-            /> */}
