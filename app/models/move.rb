@@ -1,5 +1,4 @@
 class Move < ApplicationRecord
+  serialize :board, Array
   belongs_to :game
-  belongs_to :card
-  belongs_to :piece
 end
