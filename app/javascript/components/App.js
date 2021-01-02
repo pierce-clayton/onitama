@@ -25,12 +25,9 @@ export default class App extends Component {
     {
       connected: () => this.handleConnected(),
       received: (data) => this.handleReceived(data),
-      joined_game: (user) => {
-        this.channel.perform("joined_game", {user: user});
-      },
-      start: (players) => {
-        this.channel.perform("start", [...players]);
-      },
+      joined_game: (data) => {
+        this.channel.perform("joined_game", data.user);
+      }
     }
   );
   componentDidMount = () => {
@@ -61,7 +58,7 @@ export default class App extends Component {
     this.setState((_) => ({
       game: game
     }));
-    this.channel.unsubscribe()
+    // this.channel.unsubscribe()
   };
 
   handleGameWon = (game) => {
@@ -91,7 +88,7 @@ export default class App extends Component {
 
   handleLogin = (data) => {
     this.setState({ loggedIn: 'LOGGED_IN', user: data.user });
-    this.channel.joined_game(data.user)
+    this.channel.joined_game(data)
   };
   handleLogout = () => {
     this.setState({

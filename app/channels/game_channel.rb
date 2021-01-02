@@ -14,17 +14,13 @@ class GameChannel < ApplicationCable::Channel
     last_game = @user.games.last
     if last_game.winning_user_id.nil?
       ActionCable.server.broadcast 'GameChannel', game: last_game
-      MatchChannel.broadcast_to last_game.red_user, game: last_game
-      MatchChannel.broadcast_to last_game.blue_user, game: last_game
-      puts '*' * 30
     else
       @@match.length == 2 ? (@@match = []) : nil
       @@match << @user unless @@match.include?(@user)
       if @@match.length == 2
         start(@@match[0], @@match[1])
       else
-        puts '*' * 30
-        MatchChannel.broadcast_to @user, {message: 'waiting'}
+        puts 'Waiting for opponent...'
       end
     end
   end
@@ -32,13 +28,10 @@ class GameChannel < ApplicationCable::Channel
   def start(player1, player2)
     game = Game.create!(red_user: player1, blue_user: player2, state: 'start', winning_user_id: nil)
     ActionCable.server.broadcast 'GameChannel', game: game
-    MatchChannel.broadcast_to player1, { message: 'Match started Red Player' }
-    MatchChannel.broadcast_to player2, { message: 'Match started Blue Player' }
   end
 
 
   def unsubscribed
-    stop_all_streams
     # raise NotImplementedError
     # Any cleanup needed when channel is unsubscribed
   end
