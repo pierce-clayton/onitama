@@ -10,17 +10,21 @@ const Card = ({
 }) => {
   // prevent error for empty card slot
   //if (!card) return null;
-  let startTop;
-  let startRight;
-  let animClassX;
-  let animClassY;
-  let animClassR;
+  let startTop = 0;
+  let startRight = 0;
+  let startOrientation = 0;
+  let animClassX = "";
+  let animClassY = "";
+  let animClassR = "";
 
   const divClass = selectedCard === card ? "game-card selected" : "game-card";
 
+  let imgClass = flip ? " card-image flip-vertical" : "card-image";
   if (transition.playerCard.card === card) {
     startTop = transition.playerCard.startTop;
     startRight = transition.playerCard.startRight;
+    startOrientation = transition.playerCard.startOrientation;
+    imgClass = "card-image";
     if (transition.startAnim) {
       animClassX = "player-force-move-x";
       animClassY = "player-force-move-y";
@@ -29,48 +33,40 @@ const Card = ({
   } else if (transition.nextCard.card === card) {
     startTop = transition.nextCard.startTop;
     startRight = transition.nextCard.startRight;
+    // startOrientation = transition.nextCard.startOrientation;
     if (transition.startAnim) {
       animClassX = "next-force-move-x";
       animClassY = "next-force-move-y";
-      animClassR = "next-force-move-r";
     }
-  } else {
-    startTop = 0;
-    startRight = 0;
   }
-
-  const imgClass = flip ? " card-image flip-vertical" : "card-image";
+  startOrientation = 0;
   return (
     <div
-      // className={`${animClass}`}
+      className={`${divClass} ${animClassX}`}
+      ref={cardRef}
+      onClick={(e) => selectCard(e, card)}
       style={{
-        transition: "none",
+        transform: `translate(${startRight}px)`,
       }}
     >
       <div
-        className={`${divClass} ${animClassX}`}
-        ref={cardRef}
-        onClick={(e) => selectCard(e, card)}
+        className={`${divClass} ${animClassY}`}
         style={{
-          transform: `translate(${startRight}px)`,
+          transform: `translateY(${startTop}px)`,
         }}
       >
-        <div
-          className={`${divClass} ${animClassY}`}
-          style={{
-            transform: `translateY(${startTop}px)`,
-          }}
-        >
-          <figure className={`image game-card is-4by3 ${animClassR}`}>
-            {card ? (
-              <img
-                src={require(`images/${card.name}.jpg`)}
-                alt={card.name}
-                className={imgClass}
-              />
-            ) : null}
-          </figure>
-        </div>
+        <figure className={`image game-card is-4by3`}>
+          {card ? (
+            <img
+              src={require(`images/${card.name}.jpg`)}
+              alt={card.name}
+              className={`${imgClass} ${animClassR}`}
+              style={{
+                transform: `rotate(${startOrientation}turn)`,
+              }}
+            />
+          ) : null}
+        </figure>
       </div>
     </div>
   );

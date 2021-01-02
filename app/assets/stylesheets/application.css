@@ -82,7 +82,7 @@ figure.image.board-square.is-square {
 .player-force-move-r {
   transition: transform 0.5s;
   transition-delay: 1s;
-  transform: rotate(0) !important;
+  transform: rotate(0.5turn) !important;
 }
 
 
@@ -97,13 +97,6 @@ figure.image.board-square.is-square {
   transition-delay: 1.5s;
   transform: translate(0) !important;
 }
-
-.next-force-move-r {
-  transition: transform 0.5s;
-  transition-delay: 1s;
-  transform: rotate(0) !important;
-}
-
 
 .next-force-move-y {
   transition: transform 1.5s;

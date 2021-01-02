@@ -40,7 +40,6 @@ class Game extends Component {
           card: {},
           startTop: 0,
           startRight: 0,
-          startOrientation: 0,
         },
       },
     };
@@ -281,10 +280,6 @@ class Game extends Component {
 
           prevState.transition.nextCard.startRight =
             nextStartRight - ref.getBoundingClientRect().right;
-
-          prevState.transition.nextCard.startOrientation = playerStartOrientation;
-
-          console.log(prevState.transition.nextCard.card);
 
           return this.sendMove(prevState, newPlayer);
         });
