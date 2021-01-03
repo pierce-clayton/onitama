@@ -34,7 +34,6 @@ class Game extends Component {
           card: {},
           startTop: 0,
           startRight: 0,
-          startOrientation: 0,
         },
         nextCard: {
           card: {},
@@ -110,7 +109,6 @@ class Game extends Component {
     if (
       currentTarget.dataset.id[0] === this.state.currentPlayer[0].toUpperCase()
     ) {
-      // this.setState({ selectPiece: {currentTarget.textContent} });
       this.selectPiece(currentTarget);
     } else {
       this.movePiece(currentTarget);
@@ -171,10 +169,17 @@ class Game extends Component {
     const { row, col } = currentTarget.dataset;
 
     this.state.validMoves.forEach((move) => {
+      //only allow move if it is a valid move
       if (move[0] === +col && move[1] === +row) {
         return this.setState((prevState) => {
+          let destinationCardTop;
+          let destinationCardRight;
+          let nextStartTop;
+          let nextStartRight;
           // check if move will take opponents master
-          const won = this.isGameOver(prevState, move);
+          if (this.isGameOver(prevState, move)) {
+            window.alert(`${prevState.currentPlayer} Wins!`);
+          }
           // move selected piece to new square and empty out current square
           prevState.board[row][col] = prevState.selectedPiece.id;
           prevState.board[prevState.selectedPiece.row][
@@ -182,7 +187,9 @@ class Game extends Component {
           ] = 0;
           // set new current player and set up cards for next turn
           let newPlayer;
+          //get the location of the selected card during this turn
           let currentCardLoc = prevState.selectedCard.location;
+          // keep a reference to this location for use with animations
           let cardRef = currentCardLoc;
           if (prevState.currentPlayer === "blue") {
             newPlayer = "red";
@@ -194,8 +201,21 @@ class Game extends Component {
                 card.location = 5;
               }
             });
+            //find the next location of the selected card
+            destinationCardTop =
+              this.cardRef5.getBoundingClientRect().top +
+              document.documentElement.scrollTop;
+            destinationCardRight = this.cardRef5.getBoundingClientRect().right;
+            //find the location of the current 'next card'
+            nextStartTop =
+              this.cardRef2.getBoundingClientRect().top +
+              document.documentElement.scrollTop;
+
+            nextStartRight = this.cardRef2.getBoundingClientRect().right;
           } else {
+            //set next player
             newPlayer = "blue";
+            //update card locations around board for the next turn
             prevState.transition.nextCard.card = this.findCardByLoc(5);
             prevState.cards.forEach((card) => {
               if (card.location === 5) {
@@ -204,13 +224,20 @@ class Game extends Component {
                 card.location = 2;
               }
             });
+            // find the next location of the selected card
+            destinationCardTop =
+              this.cardRef2.getBoundingClientRect().top +
+              document.documentElement.scrollTop;
+            destinationCardRight = this.cardRef2.getBoundingClientRect().right;
+            //find the next location of the current 'next card'
+            nextStartTop =
+              this.cardRef5.getBoundingClientRect().top +
+              document.documentElement.scrollTop;
+
+            nextStartRight = this.cardRef5.getBoundingClientRect().right;
           }
-          if (won) window.alert(`${prevState.currentPlayer} Wins!`);
-          // *******************************************
-          // for backend:
-          // Piece and end location
-          //
-          //reset state'
+
+          // get the ref to the selected card during this turn
           let ref;
           switch (cardRef) {
             case 0:
@@ -226,39 +253,7 @@ class Game extends Component {
               ref = this.cardRef4;
               break;
           }
-
-          let destinationCardTop;
-          let destinationCardRight;
-          let playerStartOrientation;
-          let nextStartTop;
-          let nextStartRight;
-          if (prevState.currentPlayer === "blue") {
-            destinationCardTop =
-              this.cardRef5.getBoundingClientRect().top +
-              document.documentElement.scrollTop;
-            destinationCardRight = this.cardRef5.getBoundingClientRect().right;
-
-            nextStartTop =
-              this.cardRef2.getBoundingClientRect().top +
-              document.documentElement.scrollTop;
-
-            nextStartRight = this.cardRef2.getBoundingClientRect().right;
-
-            playerStartOrientation = 0;
-          } else {
-            destinationCardTop =
-              this.cardRef2.getBoundingClientRect().top +
-              document.documentElement.scrollTop;
-            destinationCardRight = this.cardRef2.getBoundingClientRect().right;
-
-            nextStartTop =
-              this.cardRef5.getBoundingClientRect().top +
-              document.documentElement.scrollTop;
-
-            nextStartRight = this.cardRef5.getBoundingClientRect().right;
-
-            playerStartOrientation = 0.5;
-          }
+          // Calculate the starting position of the currently selected card
           const startingCardTop =
             ref.getBoundingClientRect().top +
             document.documentElement.scrollTop -
@@ -266,11 +261,12 @@ class Game extends Component {
 
           const startingCardRight =
             ref.getBoundingClientRect().right - destinationCardRight;
-
+          //set the transition state so the currenlty selected card knows it's location and
+          //set the animation flag to false so the moving cards stay put until they are forced
+          // to thier new position in compnent did update
           prevState.transition.startAnim = false;
           prevState.transition.playerCard.startTop = startingCardTop;
           prevState.transition.playerCard.startRight = startingCardRight;
-          prevState.transition.playerCard.startOrientation = playerStartOrientation;
           prevState.transition.playerCard.card = prevState.selectedCard;
 
           prevState.transition.nextCard.startTop =
@@ -292,9 +288,7 @@ class Game extends Component {
     console.log(
       "I'm sending the new board and card state and new current player to teh backend "
     );
-    // return {
-    //   transition
-    // }
+
     return {
       board: [...prevState.board],
       currentPlayer: newPlayer,
@@ -352,7 +346,9 @@ class Game extends Component {
   };
 
   componentDidUpdate() {
+    //if the animation flag is false we reset it so cards will be animated to tbie rnew positions
     if (!this.state.transition.startAnim) {
+      // update after a short delay so cards have a new position which will trigger the animation
       setTimeout(() => {
         this.setState({
           transition: {
@@ -363,11 +359,6 @@ class Game extends Component {
       }, 500);
     }
   }
-  // set new starting location only on outter div, all in one. Then use above state change to animate inner divs back using steps.
-
-  // resetAnimationState = () => {
-  //   ,
-  // };
 
   render() {
     return (

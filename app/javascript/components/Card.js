@@ -8,38 +8,44 @@ const Card = ({
   cardRef,
   transition,
 }) => {
-  // prevent error for empty card slot
-  //if (!card) return null;
+  //set default animation values for cards so that they are simply forced to thier current locations
   let startTop = 0;
   let startRight = 0;
-  let startOrientation = 0;
+  // set default animation classes that will be switched on based on teh state from Game
   let animClassX = "";
   let animClassY = "";
   let animClassR = "";
 
+  // add shadow to the selected card
   const divClass = selectedCard === card ? "game-card selected" : "game-card";
+  // invert cards facing the opposing player
+  let imgClass = flip ? "card-image flip-vertical" : "card-image";
 
-  let imgClass = flip ? " card-image flip-vertical" : "card-image";
+  // if the current card is a moving card from a palyers had set it's location to it's previous lcoation
   if (transition.playerCard.card === card) {
     startTop = transition.playerCard.startTop;
     startRight = transition.playerCard.startRight;
-    startOrientation = transition.playerCard.startOrientation;
-    imgClass = "card-image";
+
+    // keep the opponents card that will becme the next card from flipping over until the animation
+    //plays
+    imgClass = card.location === 2 ? "card-image flip-vertical" : "card-image";
+    // if the animation flag is true apply classes that will froce cards to thier new locations.
     if (transition.startAnim) {
       animClassX = "player-force-move-x";
       animClassY = "player-force-move-y";
       animClassR = "player-force-move-r";
+      if (card.location === 2) animClassR = "top-player-force-anim";
     }
+    // if the card is the 'next card' from the previous turn apply classes that will set it's location to it's previous location.
   } else if (transition.nextCard.card === card) {
     startTop = transition.nextCard.startTop;
     startRight = transition.nextCard.startRight;
-    // startOrientation = transition.nextCard.startOrientation;
+    // if animation flag is true, animate previous 'next card' into it's new position
     if (transition.startAnim) {
       animClassX = "next-force-move-x";
       animClassY = "next-force-move-y";
     }
   }
-  startOrientation = 0;
   return (
     <div
       className={`${divClass} ${animClassX}`}
@@ -61,9 +67,6 @@ const Card = ({
               src={require(`images/${card.name}.jpg`)}
               alt={card.name}
               className={`${imgClass} ${animClassR}`}
-              style={{
-                transform: `rotate(${startOrientation}turn)`,
-              }}
             />
           ) : null}
         </figure>
