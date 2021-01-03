@@ -1,14 +1,12 @@
 import React, { Component } from "react";
-import Waiting from "../components/Waiting";
-
 import PlayerCards from "./PlayerCards";
 import Board from "../components/Board";
 import Card from "../components/Card";
+import { CARDS } from "../constants/index";
 
 // for Backend: need piece_id, new pos, card_id
 
 class Game extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -23,67 +21,55 @@ class Game extends Component {
         [0, 0, 0, 0, 0],
         ["Bs1", "Bs2", "Bm", "Bs3", "Bs4"],
       ],
-      cards: [
-        {
-          name: "tiger",
-          location: 0,
-          moves: "(0,-1) (0,2)",
+      cards: [],
+      transition: {
+        startAnim: true,
+        playerCard: {
+          card: {},
+          startTop: 0,
+          startRight: 0,
         },
-        {
-          name: "cobra",
-          location: 1,
-          moves: "(-1,0) (1,1) (1,-1)",
+        nextCard: {
+          card: {},
+          startTop: 0,
+          startRight: 0,
         },
-        {
-          name: "dragon",
-          location: 2,
-          moves: "(-2,1) (2,1) (-1,-1) (1,-1)",
-        },
-        {
-          name: "frog",
-          location: 3,
-          moves: "(1,-1) (-1,1) (-2,0)",
-        },
-        {
-          name: "mantis",
-          location: 4,
-          moves: "(0,-1) (1,1) (-1,1)",
-        },
-      ]
-    }
-    this.match_channel = props.cable.subscriptions.create({channel: `MatchChannel`, game_id: props.game.id}, {
-      connected: () => {
-        console.log('connected to match channel ')
       },
-      received: (data) => {
-        // console.log(data)
-        if (data.message){
-          console.log(data.message)
-        }
-        if (data.card){
-          this.updateSelectedCardState(data.card);
-        }
-        if (data.validMoves){
-          // console.log(data.validMoves)
-          this.updateValidMoves(data.validMoves);
-        } 
-        if (data.sendMove){
-          this.sendMove(data.sendMove)
-        }
-      },
-      sendSelectedCard: (card) => {
-        this.match_channel.perform('sendSelectedCard', card)
-      },
-      sendValidMoves: (validMoves) => {
-        this.match_channel.perform('sendValidMoves', validMoves)
-      },
-      sendMove: (board) => {
-        this.match_channel.perform('sendMove', board)
+    };
+    this.match_channel = props.cable.subscriptions.create(
+      { channel: `MatchChannel`, game_id: props.game.id },
+      {
+        connected: () => {
+          console.log("connected to match channel ");
+        },
+        received: (data) => {
+          // console.log(data)
+          if (data.message) {
+            console.log(data.message);
+          }
+          if (data.card) {
+            this.updateSelectedCardState(data.card);
+          }
+          if (data.validMoves) {
+            // console.log(data.validMoves)
+            this.updateValidMoves(data.validMoves);
+          }
+          if (data.sendMove) {
+            this.sendMove(data.sendMove);
+          }
+        },
+        sendSelectedCard: (card) => {
+          this.match_channel.perform("sendSelectedCard", card);
+        },
+        sendValidMoves: (validMoves) => {
+          this.match_channel.perform("sendValidMoves", validMoves);
+        },
+        sendMove: (board) => {
+          this.match_channel.perform("sendMove", board);
+        },
       }
-    })
-    
+    );
   }
-  
 
   // define blue side as default down and left most card of blue team being location 0 increasing counter clockwise
   // with the exception that the cards on the top being reversed:
@@ -118,7 +104,7 @@ class Game extends Component {
   //send selectedcard info to the backend
   sendSelectedCard = (selectedCard) => {
     // console.log("I'll send selectedCard and reset valid moves to the backend");
-    this.match_channel.sendSelectedCard({newCard: selectedCard})
+    this.match_channel.sendSelectedCard({ newCard: selectedCard });
   };
 
   //update selectedCard state with response from action cable
@@ -143,14 +129,13 @@ class Game extends Component {
 
   //handle click on the board
   handleClick = ({ currentTarget }) => {
-    if (!this.state.selectedCard) return null;
+    if (!this.state.selectedCard.name) return null;
 
     //restrict starting locations to current piece lcoations
     //############## Update this method once backend is connected#################
     if (
       currentTarget.dataset.id[0] === this.state.currentPlayer[0].toUpperCase()
     ) {
-      // this.setState({ selectPiece: {currentTarget.textContent} });
       this.selectPiece(currentTarget);
     } else {
       this.movePiece(currentTarget);
@@ -193,14 +178,15 @@ class Game extends Component {
 
   //send vaild moves associated with a selectedPiece to the backend
   sendValidMoves = (validMoves, id, col, row) => {
-    // console.log(
-    //   "I'll send the current piece and associated valid moves to the backend!"
-    // );
-    this.match_channel.sendValidMoves({newMoves: {validMoves: {validMoves: validMoves, id: id, col: col, row: row}}});
+    this.match_channel.sendValidMoves({
+      newMoves: {
+        validMoves: { validMoves: validMoves, id: id, col: col, row: row },
+      },
+    });
     // this.updateValidMoves(validMoves, id, col, row);
   };
 
-  updateValidMoves = ({validMoves, id, col, row}) => {
+  updateValidMoves = ({ validMoves, id, col, row }) => {
     this.setState({
       validMoves,
       selectedPiece: { id, col, row },
@@ -208,14 +194,21 @@ class Game extends Component {
   };
 
   //move piece to selected valid location
-  movePiece = ({ dataset }) => {
-    const { row, col } = dataset;
+  movePiece = (currentTarget) => {
+    const { row, col } = currentTarget.dataset;
 
     this.state.validMoves.forEach((move) => {
+      //only allow move if it is a valid move
       if (move[0] === +col && move[1] === +row) {
         return this.setState((prevState) => {
-          // check if move will take opponents master
-          const won = this.isGameOver(prevState, move);
+          let destinationCardTop;
+          let destinationCardRight;
+          let nextStartTop;
+          let nextStartRight;
+          // check if move will wnd the game
+          if (this.isGameOver(prevState, move)) {
+            window.alert(`${prevState.currentPlayer} Wins!`);
+          }
           // move selected piece to new square and empty out current square
           prevState.board[row][col] = prevState.selectedPiece.id;
           prevState.board[prevState.selectedPiece.row][
@@ -223,9 +216,13 @@ class Game extends Component {
           ] = 0;
           // set new current player and set up cards for next turn
           let newPlayer;
+          //get the location of the selected card during this turn
           let currentCardLoc = prevState.selectedCard.location;
+          // keep a reference to this location for use with animations
+          let cardRef = currentCardLoc;
           if (prevState.currentPlayer === "blue") {
             newPlayer = "red";
+            prevState.transition.nextCard.card = this.findCardByLoc(2);
             prevState.cards.forEach((card) => {
               if (card.location === 2) {
                 card.location = currentCardLoc;
@@ -233,8 +230,22 @@ class Game extends Component {
                 card.location = 5;
               }
             });
+            //find the next location of the selected card
+            destinationCardTop =
+              this.cardRef5.getBoundingClientRect().top +
+              document.documentElement.scrollTop;
+            destinationCardRight = this.cardRef5.getBoundingClientRect().right;
+            //find the location of the current 'next card'
+            nextStartTop =
+              this.cardRef2.getBoundingClientRect().top +
+              document.documentElement.scrollTop;
+
+            nextStartRight = this.cardRef2.getBoundingClientRect().right;
           } else {
+            //set next player
             newPlayer = "blue";
+            //update card locations around board for the next turn
+            prevState.transition.nextCard.card = this.findCardByLoc(5);
             prevState.cards.forEach((card) => {
               if (card.location === 5) {
                 card.location = currentCardLoc;
@@ -242,16 +253,61 @@ class Game extends Component {
                 card.location = 2;
               }
             });
-          }
-          if (won) window.alert(`${prevState.currentPlayer} Wins!`);
-          // *******************************************
-          // for backend:
-          // Piece and end location
-          //
+            // find the next location of the selected card
+            destinationCardTop =
+              this.cardRef2.getBoundingClientRect().top +
+              document.documentElement.scrollTop;
+            destinationCardRight = this.cardRef2.getBoundingClientRect().right;
+            //find the next location of the current 'next card'
+            nextStartTop =
+              this.cardRef5.getBoundingClientRect().top +
+              document.documentElement.scrollTop;
 
-          //reset state
-          //
-          this.match_channel.sendMove({sendMove: {prevState, newPlayer}})
+            nextStartRight = this.cardRef5.getBoundingClientRect().right;
+          }
+
+          // get the ref to the selected card during this turn
+          let ref;
+          switch (cardRef) {
+            case 0:
+              ref = this.cardRef0;
+              break;
+            case 1:
+              ref = this.cardRef1;
+              break;
+            case 3:
+              ref = this.cardRef3;
+              break;
+            case 4:
+              ref = this.cardRef4;
+              break;
+          }
+
+          // return this.sendMove(prevState, newPlayer);
+          // Calculate the starting position of the currently selected card
+          const startingCardTop =
+            ref.getBoundingClientRect().top +
+            document.documentElement.scrollTop -
+            destinationCardTop;
+
+          const startingCardRight =
+            ref.getBoundingClientRect().right - destinationCardRight;
+          //set the transition state so the currenlty selected card knows it's location and
+          //set the animation flag to false so the moving cards stay put until they are forced
+          // to thier new position in compnent did update
+          prevState.transition.startAnim = false;
+          prevState.transition.playerCard.startTop = startingCardTop;
+          prevState.transition.playerCard.startRight = startingCardRight;
+          prevState.transition.playerCard.card = prevState.selectedCard;
+
+          prevState.transition.nextCard.startTop =
+            nextStartTop -
+            ref.getBoundingClientRect().top -
+            document.documentElement.scrollTop;
+
+          prevState.transition.nextCard.startRight =
+            nextStartRight - ref.getBoundingClientRect().right;
+          this.match_channel.sendMove({ sendMove: { prevState, newPlayer } });
           // return this.sendMove(prevState, newPlayer);
         });
       }
@@ -259,7 +315,7 @@ class Game extends Component {
   };
 
   //update board after a move is made on the backend
-  sendMove({prevState, newPlayer}) {
+  sendMove({ prevState, newPlayer }) {
     this.setState(() => {
       return {
         board: [...prevState.board],
@@ -268,8 +324,9 @@ class Game extends Component {
         selectedPiece: {},
         validMoves: [],
         cards: [...prevState.cards],
+        transition: prevState.transition,
       };
-    })
+    });
   }
 
   //check to see if the current move will end the game
@@ -292,11 +349,54 @@ class Game extends Component {
     }
   };
 
+  componentDidMount() {
+    // Shuffle cards
+    const shuffled = CARDS.sort(() => 0.5 - Math.random());
+
+    // Get sub-array of first n elements after shuffled
+    let cards = shuffled.slice(0, 5).map((card, i) => {
+      card.location = i;
+      return card;
+    });
+    this.sendNewDeck(cards);
+  }
+
+  //send New Deck of cards to the back end
+  sendNewDeck = (cards) => {
+    console.log("I'm updating the back end with the new deck of cards");
+    this.updateCardsState(cards);
+  };
+
+  // add the new deck of cards into state
+  updateCardsState = (cards) => {
+    this.setState({
+      cards,
+    });
+  };
+
+  componentDidUpdate() {
+    //if the animation flag is false we reset it so cards will be animated to tbie rnew positions
+    if (!this.state.transition.startAnim) {
+      // update after a short delay so cards have a new position which will trigger the animation
+      setTimeout(() => {
+        this.setState({
+          transition: {
+            ...this.state.transition,
+            startAnim: true,
+          },
+        });
+      }, 500);
+    }
+  }
+
   render() {
+    console.log(this.props.user);
     return (
       <div className="columns is-mobile is-vcentered game">
         <div className="column is-1 is-offset-1">
           <Card
+            transition={this.state.transition}
+            cardRef={(el) => (this.cardRef5 = el)}
             flip={true}
             card={this.findCardByLoc(5)}
             selectCard={this.selectCard}
@@ -304,6 +404,9 @@ class Game extends Component {
         </div>
         <div className="column is-4">
           <PlayerCards
+            transition={this.state.transition}
+            cardRefL={(el) => (this.cardRef3 = el)}
+            cardRefR={(el) => (this.cardRef4 = el)}
             flip={true}
             card1={this.findCardByLoc(3)}
             card2={this.findCardByLoc(4)}
@@ -311,11 +414,15 @@ class Game extends Component {
             selectedCard={this.state.selectedCard}
           />
           <Board
+            transition={this.state.transition}
             board={this.state.board}
             handleClick={this.handleClick}
             validMoves={this.state.validMoves}
           />
           <PlayerCards
+            transition={this.state.transition}
+            cardRefL={(el) => (this.cardRef0 = el)}
+            cardRefR={(el) => (this.cardRef1 = el)}
             card1={this.findCardByLoc(0)}
             card2={this.findCardByLoc(1)}
             selectCard={this.selectCard}
@@ -323,7 +430,12 @@ class Game extends Component {
           />
         </div>
         <div className="column is-2 is-offset-2">
-          <Card card={this.findCardByLoc(2)} selectCard={this.selectCard} />
+          <Card
+            transition={this.state.transition}
+            cardRef={(el) => (this.cardRef2 = el)}
+            card={this.findCardByLoc(2)}
+            selectCard={this.selectCard}
+          />
         </div>
       </div>
     );

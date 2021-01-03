@@ -36,6 +36,9 @@ const BoardSquare = ({ piece, handleClick, row, col, validMoves }) => {
       piece_image = null;
   }
 
+  const isTemple = (row === 0 && col === 2) || (row === 4 && col === 2);
+  const templeClass = isTemple && row === 4 ? "flip-vertical" : "";
+
   return (
     <div
       className={squareClass}
@@ -45,6 +48,9 @@ const BoardSquare = ({ piece, handleClick, row, col, validMoves }) => {
       onClick={handleClick}
     >
       <figure className="image board-square is-square">
+        {isTemple ? (
+          <img src={require("images/gate.png")} className={templeClass} />
+        ) : null}
         {piece_image ? (
           <img
             src={require(`images/${piece_image}.png`)}
@@ -53,7 +59,6 @@ const BoardSquare = ({ piece, handleClick, row, col, validMoves }) => {
           />
         ) : null}
       </figure>
-      {/* <p>{piece}</p> */}
     </div>
   );
 };
