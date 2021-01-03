@@ -219,19 +219,21 @@ class Game extends Component {
         // set new current player and set up cards for next turn
         let newPlayer;
         //get the location of the selected card during this turn
-        let currentCardLoc = prevState.selectedCard.location;
+
+        let currentCardLoc = +prevState.selectedCard.location;
         // keep a reference to this location for use with animations
         let cardRef = currentCardLoc;
         if (prevState.currentPlayer === "blue") {
           newPlayer = "red";
           prevState.transition.nextCard.card = this.findCardByLoc(2);
           prevState.cards.forEach((card) => {
-            if (card.location === 2) {
+            if (+card.location === 2) {
               card.location = currentCardLoc;
-            } else if (card === prevState.selectedCard) {
+            } else if (card.name === prevState.selectedCard.name) {
               card.location = 5;
             }
           });
+
           //find the next location of the selected card
           destinationCardTop =
             this.cardRef5.getBoundingClientRect().top +
@@ -249,9 +251,9 @@ class Game extends Component {
           //update card locations around board for the next turn
           prevState.transition.nextCard.card = this.findCardByLoc(5);
           prevState.cards.forEach((card) => {
-            if (card.location === 5) {
+            if (+card.location === 5) {
               card.location = currentCardLoc;
-            } else if (card === prevState.selectedCard) {
+            } else if (card.name === prevState.selectedCard.name) {
               card.location = 2;
             }
           });
@@ -311,9 +313,17 @@ class Game extends Component {
 
         prevState.transition.nextCard.startRight =
           nextStartRight - ref.getBoundingClientRect().right;
+
+        //adjust adnamtions for inverted board on redplayer side
+        if (this.props.userColor === "Red") {
+          prevState.transition.playerCard.startTop *= -1;
+          prevState.transition.playerCard.startRight *= -1;
+          prevState.transition.nextCard.startTop *= -1;
+          prevState.transition.nextCard.startRight *= -1;
+        }
+
+        //send updated board to the backend
         this.match_channel.sendMove({ sendMove: { prevState, newPlayer } });
-        // return this.sendMove(prevState, newPlayer);
-        //});
       }
     });
   };
@@ -391,10 +401,18 @@ class Game extends Component {
     }
   }
 
+  //flip board for Red player
+  isRed = () => {
+    let gameClass = "columns is-mobile is-vcentered game";
+    if (this.props.userColor === "Red") {
+      gameClass += " flip-vertical";
+    }
+    return gameClass;
+  };
+
   render() {
-    console.log(this.props.user);
     return (
-      <div className="columns is-mobile is-vcentered game">
+      <div className={this.isRed()}>
         <div className="column is-1 is-offset-1">
           <Card
             transition={this.state.transition}
@@ -416,6 +434,7 @@ class Game extends Component {
             selectedCard={this.state.selectedCard}
           />
           <Board
+            userColor={this.props.userColor}
             transition={this.state.transition}
             board={this.state.board}
             handleClick={this.handleClick}

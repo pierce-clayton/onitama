@@ -8,8 +8,17 @@ const isValid = (row, col, validMoves) => {
   return squareClass;
 };
 
-const BoardSquare = ({ piece, handleClick, row, col, validMoves }) => {
+const BoardSquare = ({
+  piece,
+  handleClick,
+  row,
+  col,
+  validMoves,
+  userColor,
+}) => {
   const squareClass = isValid(row, col, validMoves);
+  const pieceClass =
+    userColor === "Red" ? "unflip-vertical is-centered" : "is-centered";
   let piece_image;
   switch (piece) {
     case "Rs1":
@@ -54,7 +63,7 @@ const BoardSquare = ({ piece, handleClick, row, col, validMoves }) => {
         {piece_image ? (
           <img
             src={require(`images/${piece_image}.png`)}
-            className={"is-centered"}
+            className={pieceClass}
             alt={piece_image}
           />
         ) : null}

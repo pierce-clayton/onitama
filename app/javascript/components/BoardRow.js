@@ -1,7 +1,7 @@
 import React from "react";
 import BoardSquare from "./BoardSquare";
 
-const BoardRow = ({ pieces, handleClick, row, validMoves }) => {
+const BoardRow = ({ pieces, handleClick, row, validMoves, userColor }) => {
   return (
     <div className="tile is-ancestor">
       <div className="tile">
@@ -13,6 +13,7 @@ const BoardRow = ({ pieces, handleClick, row, validMoves }) => {
             row={row}
             col={i}
             validMoves={validMoves}
+            userColor={userColor}
           />
         ))}
       </div>

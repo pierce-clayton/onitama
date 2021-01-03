@@ -61,6 +61,11 @@ html {
 .flip-vertical {
   transform: rotate(0.5turn)
 }
+
+.unflip-vertical {
+  transform: rotate(0.5turn)
+}
+
 .tile.valid {
   background-color: rgba(155, 141, 168, 0.8);
 }
