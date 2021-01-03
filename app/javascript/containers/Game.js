@@ -195,137 +195,139 @@ class Game extends Component {
 
   //move piece to selected valid location
   movePiece = (currentTarget) => {
+    console.log("Moo");
     const { row, col } = currentTarget.dataset;
 
     this.state.validMoves.forEach((move) => {
       //only allow move if it is a valid move
       if (move[0] === +col && move[1] === +row) {
-        return this.setState((prevState) => {
-          let destinationCardTop;
-          let destinationCardRight;
-          let nextStartTop;
-          let nextStartRight;
-          // check if move will wnd the game
-          if (this.isGameOver(prevState, move)) {
-            window.alert(`${prevState.currentPlayer} Wins!`);
-          }
-          // move selected piece to new square and empty out current square
-          prevState.board[row][col] = prevState.selectedPiece.id;
-          prevState.board[prevState.selectedPiece.row][
-            prevState.selectedPiece.col
-          ] = 0;
-          // set new current player and set up cards for next turn
-          let newPlayer;
-          //get the location of the selected card during this turn
-          let currentCardLoc = prevState.selectedCard.location;
-          // keep a reference to this location for use with animations
-          let cardRef = currentCardLoc;
-          if (prevState.currentPlayer === "blue") {
-            newPlayer = "red";
-            prevState.transition.nextCard.card = this.findCardByLoc(2);
-            prevState.cards.forEach((card) => {
-              if (card.location === 2) {
-                card.location = currentCardLoc;
-              } else if (card === prevState.selectedCard) {
-                card.location = 5;
-              }
-            });
-            //find the next location of the selected card
-            destinationCardTop =
-              this.cardRef5.getBoundingClientRect().top +
-              document.documentElement.scrollTop;
-            destinationCardRight = this.cardRef5.getBoundingClientRect().right;
-            //find the location of the current 'next card'
-            nextStartTop =
-              this.cardRef2.getBoundingClientRect().top +
-              document.documentElement.scrollTop;
-
-            nextStartRight = this.cardRef2.getBoundingClientRect().right;
-          } else {
-            //set next player
-            newPlayer = "blue";
-            //update card locations around board for the next turn
-            prevState.transition.nextCard.card = this.findCardByLoc(5);
-            prevState.cards.forEach((card) => {
-              if (card.location === 5) {
-                card.location = currentCardLoc;
-              } else if (card === prevState.selectedCard) {
-                card.location = 2;
-              }
-            });
-            // find the next location of the selected card
-            destinationCardTop =
-              this.cardRef2.getBoundingClientRect().top +
-              document.documentElement.scrollTop;
-            destinationCardRight = this.cardRef2.getBoundingClientRect().right;
-            //find the next location of the current 'next card'
-            nextStartTop =
-              this.cardRef5.getBoundingClientRect().top +
-              document.documentElement.scrollTop;
-
-            nextStartRight = this.cardRef5.getBoundingClientRect().right;
-          }
-
-          // get the ref to the selected card during this turn
-          let ref;
-          switch (cardRef) {
-            case 0:
-              ref = this.cardRef0;
-              break;
-            case 1:
-              ref = this.cardRef1;
-              break;
-            case 3:
-              ref = this.cardRef3;
-              break;
-            case 4:
-              ref = this.cardRef4;
-              break;
-          }
-
-          // return this.sendMove(prevState, newPlayer);
-          // Calculate the starting position of the currently selected card
-          const startingCardTop =
-            ref.getBoundingClientRect().top +
-            document.documentElement.scrollTop -
-            destinationCardTop;
-
-          const startingCardRight =
-            ref.getBoundingClientRect().right - destinationCardRight;
-          //set the transition state so the currenlty selected card knows it's location and
-          //set the animation flag to false so the moving cards stay put until they are forced
-          // to thier new position in compnent did update
-          prevState.transition.startAnim = false;
-          prevState.transition.playerCard.startTop = startingCardTop;
-          prevState.transition.playerCard.startRight = startingCardRight;
-          prevState.transition.playerCard.card = prevState.selectedCard;
-
-          prevState.transition.nextCard.startTop =
-            nextStartTop -
-            ref.getBoundingClientRect().top -
+        //return this.setState((prevState) => {
+        let prevState = JSON.parse(JSON.stringify(this.state));
+        let destinationCardTop;
+        let destinationCardRight;
+        let nextStartTop;
+        let nextStartRight;
+        // check if move will wnd the game
+        if (this.isGameOver(prevState, move)) {
+          window.alert(`${prevState.currentPlayer} Wins!`);
+        }
+        // move selected piece to new square and empty out current square
+        prevState.board[row][col] = prevState.selectedPiece.id;
+        prevState.board[prevState.selectedPiece.row][
+          prevState.selectedPiece.col
+        ] = 0;
+        // set new current player and set up cards for next turn
+        let newPlayer;
+        //get the location of the selected card during this turn
+        let currentCardLoc = prevState.selectedCard.location;
+        // keep a reference to this location for use with animations
+        let cardRef = currentCardLoc;
+        if (prevState.currentPlayer === "blue") {
+          newPlayer = "red";
+          prevState.transition.nextCard.card = this.findCardByLoc(2);
+          prevState.cards.forEach((card) => {
+            if (card.location === 2) {
+              card.location = currentCardLoc;
+            } else if (card === prevState.selectedCard) {
+              card.location = 5;
+            }
+          });
+          //find the next location of the selected card
+          destinationCardTop =
+            this.cardRef5.getBoundingClientRect().top +
+            document.documentElement.scrollTop;
+          destinationCardRight = this.cardRef5.getBoundingClientRect().right;
+          //find the location of the current 'next card'
+          nextStartTop =
+            this.cardRef2.getBoundingClientRect().top +
             document.documentElement.scrollTop;
 
-          prevState.transition.nextCard.startRight =
-            nextStartRight - ref.getBoundingClientRect().right;
-          this.match_channel.sendMove({ sendMove: { prevState, newPlayer } });
-          // return this.sendMove(prevState, newPlayer);
-        });
+          nextStartRight = this.cardRef2.getBoundingClientRect().right;
+        } else {
+          //set next player
+          newPlayer = "blue";
+          //update card locations around board for the next turn
+          prevState.transition.nextCard.card = this.findCardByLoc(5);
+          prevState.cards.forEach((card) => {
+            if (card.location === 5) {
+              card.location = currentCardLoc;
+            } else if (card === prevState.selectedCard) {
+              card.location = 2;
+            }
+          });
+          // find the next location of the selected card
+          destinationCardTop =
+            this.cardRef2.getBoundingClientRect().top +
+            document.documentElement.scrollTop;
+          destinationCardRight = this.cardRef2.getBoundingClientRect().right;
+          //find the next location of the current 'next card'
+          nextStartTop =
+            this.cardRef5.getBoundingClientRect().top +
+            document.documentElement.scrollTop;
+
+          nextStartRight = this.cardRef5.getBoundingClientRect().right;
+        }
+
+        // get the ref to the selected card during this turn
+        let ref;
+        switch (cardRef) {
+          case 0:
+            ref = this.cardRef0;
+            break;
+          case 1:
+            ref = this.cardRef1;
+            break;
+          case 3:
+            ref = this.cardRef3;
+            break;
+          case 4:
+            ref = this.cardRef4;
+            break;
+        }
+
+        // return this.sendMove(prevState, newPlayer);
+        // Calculate the starting position of the currently selected card
+        const startingCardTop =
+          ref.getBoundingClientRect().top +
+          document.documentElement.scrollTop -
+          destinationCardTop;
+
+        const startingCardRight =
+          ref.getBoundingClientRect().right - destinationCardRight;
+        console.log(startingCardTop, "260 ish");
+        console.log(startingCardRight, "547ish");
+        //set the transition state so the currenlty selected card knows it's location and
+        //set the animation flag to false so the moving cards stay put until they are forced
+        // to thier new position in compnent did update
+        prevState.transition.startAnim = false;
+        prevState.transition.playerCard.startTop = startingCardTop;
+        prevState.transition.playerCard.startRight = startingCardRight;
+        prevState.transition.playerCard.card = prevState.selectedCard;
+
+        prevState.transition.nextCard.startTop =
+          nextStartTop -
+          ref.getBoundingClientRect().top -
+          document.documentElement.scrollTop;
+
+        prevState.transition.nextCard.startRight =
+          nextStartRight - ref.getBoundingClientRect().right;
+        this.match_channel.sendMove({ sendMove: { prevState, newPlayer } });
+        // return this.sendMove(prevState, newPlayer);
+        //});
       }
     });
   };
 
   //update board after a move is made on the backend
   sendMove({ prevState, newPlayer }) {
-    this.setState(() => {
-      return {
-        board: [...prevState.board],
-        currentPlayer: newPlayer,
-        selectedCard: {},
-        selectedPiece: {},
-        validMoves: [],
-        cards: [...prevState.cards],
-        transition: prevState.transition,
-      };
+    this.setState({
+      board: [...prevState.board],
+      currentPlayer: newPlayer,
+      selectedCard: {},
+      selectedPiece: {},
+      validMoves: [],
+      cards: [...prevState.cards],
+      transition: prevState.transition,
     });
   }
 
