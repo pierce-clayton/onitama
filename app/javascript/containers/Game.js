@@ -91,7 +91,10 @@ class Game extends Component {
   };
 
   // Update state with selected card
-  selectCard = (e, selectedCard) => {
+  selectCard = (selectedCard) => {
+    //only allow current player to select anything
+    if (this.props.userColor.toLowerCase() !== this.state.currentPlayer)
+      return null;
     // only allow a player to select their own cards
     if (
       (this.isRedCard(selectedCard) && this.state.currentPlayer === "blue") ||

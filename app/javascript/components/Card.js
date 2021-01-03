@@ -55,7 +55,7 @@ const Card = ({
     <div
       className={`${divClass} ${animClassX}`}
       ref={cardRef}
-      onClick={(e) => selectCard(e, card)}
+      onClick={() => selectCard(card)}
       style={{
         transform: `translate(${startRight}px)`,
       }}
