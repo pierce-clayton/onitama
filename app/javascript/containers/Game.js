@@ -311,7 +311,6 @@ class Game extends Component {
 
         prevState.transition.nextCard.startRight =
           nextStartRight - ref.getBoundingClientRect().right;
-        debugger;
         this.match_channel.sendMove({ sendMove: { prevState, newPlayer } });
         // return this.sendMove(prevState, newPlayer);
         //});
