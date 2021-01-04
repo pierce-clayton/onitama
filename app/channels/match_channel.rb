@@ -23,4 +23,7 @@ class MatchChannel < ApplicationCable::Channel
     puts @game.moves.last
     broadcast_to @game, board
   end
+  def sendShuffle(cards)
+    broadcast_to @game, shuffle: cards
+  end
 end

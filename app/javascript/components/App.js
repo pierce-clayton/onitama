@@ -114,15 +114,16 @@ export default class App extends Component {
             />
           )} />
           <Route exact path="/onitama" render={props => (                
-                <Game
-                  {...props}
-                  cable={this.props.cableApp.cable}
-                  gameStarted={this.handleGameStarted}
-                  game={this.state.game}
-                  user={this.state.user}
-                  userColor={this.whatColor()}
-                  />
-              )}                 
+            <Game
+            {...props}
+            cable={this.props.cableApp.cable}
+            gameStarted={this.handleGameStarted}
+            state={this.state}
+            game={this.state.game}
+            user={this.state.user}
+            userColor={this.whatColor()}
+            />
+          )}                 
           />
         </Switch>
         <div className="foot">

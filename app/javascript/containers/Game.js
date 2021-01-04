@@ -57,6 +57,9 @@ class Game extends Component {
           if (data.sendMove) {
             this.sendMove(data.sendMove);
           }
+          if (data.shuffle){
+            this.updateCardsState(data.shuffle)
+          }
         },
         sendSelectedCard: (card) => {
           this.match_channel.perform("sendSelectedCard", card);
@@ -67,8 +70,12 @@ class Game extends Component {
         sendMove: (board) => {
           this.match_channel.perform("sendMove", board);
         },
+        sendShuffle: (cards) => {
+          this.match_channel.perform("sendShuffle", cards);
+        }
       }
     );
+    
   }
 
   // define blue side as default down and left most card of blue team being location 0 increasing counter clockwise
@@ -365,31 +372,25 @@ class Game extends Component {
   };
 
   componentDidMount() {
-    // Shuffle cards
-    const shuffled = CARDS.sort(() => 0.5 - Math.random());
-
-    // Get sub-array of first n elements after shuffled
-    let cards = shuffled.slice(0, 5).map((card, i) => {
-      card.location = i;
-      return card;
-    });
-    this.sendNewDeck(cards);
+    
   }
 
   //send New Deck of cards to the back end
   sendNewDeck = (cards) => {
     console.log("I'm updating the back end with the new deck of cards");
-    this.updateCardsState(cards);
+    this.match_channel.sendShuffle({cards: cards})
+    
   };
 
   // add the new deck of cards into state
-  updateCardsState = (cards) => {
+  updateCardsState = (data) => {
+    console.log(data['cards'])
     this.setState({
-      cards,
+      cards: data['cards'],
     });
   };
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps, _) {
     //if the animation flag is false we reset it so cards will be animated to tbie rnew positions
     if (!this.state.transition.startAnim) {
       // update after a short delay so cards have a new position which will trigger the animation
@@ -402,7 +403,21 @@ class Game extends Component {
         });
       }, 500);
     }
+    if (prevProps !== this.props){
+      console.log('prop update')
+      if ((this.props.userColor === "Red") && (this.state.cards.length === 0)){
+        console.log('shuffling')
+        const shuffled = CARDS.sort(() => 0.5 - Math.random())
+        // Get sub-array of first n elements after shuffled
+        let cards = shuffled.slice(0, 5).map((card, i) => {
+          card.location = i
+          return card
+        })
+        this.sendNewDeck(cards)
+      }
+
   }
+}
 
   //flip board for Red player
   isRed = () => {
