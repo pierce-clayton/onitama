@@ -17,9 +17,9 @@ const LandingPage = ({ handleSuccessfulAuth }) => {
         <div className="column ">
           <Login handleSuccessfulAuth={handleSuccessfulAuth} />
           <section style={{ display: "flex", justifyContent: "center" }}>
-            <h2>
+            <h1>
               <strong>Or</strong>
-            </h2>
+            </h1>
           </section>
           <Registration handleSuccessfulAuth={handleSuccessfulAuth} />
         </div>

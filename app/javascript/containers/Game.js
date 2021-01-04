@@ -43,7 +43,6 @@ class Game extends Component {
           console.log("connected to match channel ");
         },
         received: (data) => {
-          // console.log(data)
           if (data.message) {
             console.log(data.message);
           }
@@ -51,7 +50,6 @@ class Game extends Component {
             this.updateSelectedCardState(data.card);
           }
           if (data.validMoves) {
-            // console.log(data.validMoves)
             this.updateValidMoves(data.validMoves);
           }
           if (data.sendMove) {
@@ -106,7 +104,6 @@ class Game extends Component {
 
   //send selectedcard info to the backend
   sendSelectedCard = (selectedCard) => {
-    // console.log("I'll send selectedCard and reset valid moves to the backend");
     this.match_channel.sendSelectedCard({ newCard: selectedCard });
   };
 
@@ -198,7 +195,6 @@ class Game extends Component {
 
   //move piece to selected valid location
   movePiece = (currentTarget) => {
-    console.log("Moo");
     const { row, col } = currentTarget.dataset;
 
     this.state.validMoves.forEach((move) => {
