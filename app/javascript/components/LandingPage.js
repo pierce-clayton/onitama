@@ -1,9 +1,11 @@
 import React from "react";
 import NewGame from "./NewGame";
 import Player from "./Player";
+import Login from "./auth/Login";
+import Registration from "./auth/Registration";
 import Logo from "images/OnitamaLogo.svg.png";
 
-const LandingPage = (props) => {
+const LandingPage = ({ handleSuccessfulAuth }) => {
   return (
     <div>
       <div className="is-centered">
@@ -13,11 +15,13 @@ const LandingPage = (props) => {
       </div>
       <div className="columns">
         <div className="column ">
-          <Player
-            playerColor={props.playerColor}
-            user_name={props.user_name}
-            handleLogin={props.handleLogin}
-          />
+          <Login handleSuccessfulAuth={handleSuccessfulAuth} />
+          <section style={{ display: "flex", justifyContent: "center" }}>
+            <h2>
+              <strong>Or</strong>
+            </h2>
+          </section>
+          <Registration handleSuccessfulAuth={handleSuccessfulAuth} />
         </div>
         <div className="column">
           <NewGame />

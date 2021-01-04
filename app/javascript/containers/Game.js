@@ -299,8 +299,6 @@ class Game extends Component {
 
         const startingCardRight =
           ref.getBoundingClientRect().right - destinationCardRight;
-        console.log(startingCardTop, "260 ish");
-        console.log(startingCardRight, "547ish");
         //set the transition state so the currenlty selected card knows it's location and
         //set the animation flag to false so the moving cards stay put until they are forced
         // to thier new position in compnent did update
