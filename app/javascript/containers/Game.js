@@ -76,6 +76,7 @@ class Game extends Component {
       }
     );
     
+    
   }
 
   // define blue side as default down and left most card of blue team being location 0 increasing counter clockwise
@@ -205,7 +206,7 @@ class Game extends Component {
 
   //move piece to selected valid location
   movePiece = (currentTarget) => {
-    console.log("Moo");
+    // console.log("Moo");
     const { row, col } = currentTarget.dataset;
 
     this.state.validMoves.forEach((move) => {
@@ -306,8 +307,8 @@ class Game extends Component {
 
         const startingCardRight =
           ref.getBoundingClientRect().right - destinationCardRight;
-        console.log(startingCardTop, "260 ish");
-        console.log(startingCardRight, "547ish");
+        // console.log(startingCardTop, "260 ish");
+        // console.log(startingCardRight, "547ish");
         //set the transition state so the currenlty selected card knows it's location and
         //set the animation flag to false so the moving cards stay put until they are forced
         // to thier new position in compnent did update
@@ -384,13 +385,13 @@ class Game extends Component {
 
   // add the new deck of cards into state
   updateCardsState = (data) => {
-    console.log(data['cards'])
+    // console.log(data['cards'])
     this.setState({
       cards: data['cards'],
     });
   };
 
-  componentDidUpdate(prevProps, _) {
+  componentDidUpdate(prevProps, prevState) {
     //if the animation flag is false we reset it so cards will be animated to tbie rnew positions
     if (!this.state.transition.startAnim) {
       // update after a short delay so cards have a new position which will trigger the animation
@@ -404,7 +405,7 @@ class Game extends Component {
       }, 500);
     }
     if (prevProps !== this.props){
-      console.log('prop update')
+      // console.log('prop update')
       if ((this.props.userColor === "Red") && (this.state.cards.length === 0)){
         console.log('shuffling')
         const shuffled = CARDS.sort(() => 0.5 - Math.random())
@@ -414,9 +415,13 @@ class Game extends Component {
           return card
         })
         this.sendNewDeck(cards)
+      }else{
+        this.match_channel.perform('getLastMove')
       }
 
   }
+  
+
 }
 
   //flip board for Red player

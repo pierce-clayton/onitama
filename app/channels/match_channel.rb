@@ -18,12 +18,15 @@ class MatchChannel < ApplicationCable::Channel
   end
 
   def sendMove(board)
-    puts '*' * 30
-    @game.moves.create!(board: board['sendMove']['prevState']['board'])
-    puts @game.moves.last
+   
+    @game.moves.create!(board_state: board)
     broadcast_to @game, board
   end
   def sendShuffle(cards)
     broadcast_to @game, shuffle: cards
+  end
+  def getLastMove
+    puts '*' * 30
+    broadcast_to @game, @game.moves.last.board_state 
   end
 end
