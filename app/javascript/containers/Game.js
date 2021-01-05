@@ -43,7 +43,6 @@ class Game extends Component {
           console.log("connected to match channel ");
         },
         received: (data) => {
-          // console.log(data)
           if (data.message) {
             console.log(data.message);
           }
@@ -51,14 +50,13 @@ class Game extends Component {
             this.updateSelectedCardState(data.card);
           }
           if (data.validMoves) {
-            // console.log(data.validMoves)
             this.updateValidMoves(data.validMoves);
           }
           if (data.sendMove) {
             this.sendMove(data.sendMove);
           }
-          if (data.shuffle){
-            this.updateCardsState(data.shuffle)
+          if (data.shuffle) {
+            this.updateCardsState(data.shuffle);
           }
         },
         sendSelectedCard: (card) => {
@@ -72,11 +70,9 @@ class Game extends Component {
         },
         sendShuffle: (cards) => {
           this.match_channel.perform("sendShuffle", cards);
-        }
+        },
       }
     );
-    
-    
   }
 
   // define blue side as default down and left most card of blue team being location 0 increasing counter clockwise
@@ -114,7 +110,6 @@ class Game extends Component {
 
   //send selectedcard info to the backend
   sendSelectedCard = (selectedCard) => {
-    // console.log("I'll send selectedCard and reset valid moves to the backend");
     this.match_channel.sendSelectedCard({ newCard: selectedCard });
   };
 
@@ -206,7 +201,6 @@ class Game extends Component {
 
   //move piece to selected valid location
   movePiece = (currentTarget) => {
-    // console.log("Moo");
     const { row, col } = currentTarget.dataset;
 
     this.state.validMoves.forEach((move) => {
@@ -307,8 +301,6 @@ class Game extends Component {
 
         const startingCardRight =
           ref.getBoundingClientRect().right - destinationCardRight;
-        // console.log(startingCardTop, "260 ish");
-        // console.log(startingCardRight, "547ish");
         //set the transition state so the currenlty selected card knows it's location and
         //set the animation flag to false so the moving cards stay put until they are forced
         // to thier new position in compnent did update
@@ -372,22 +364,19 @@ class Game extends Component {
     }
   };
 
-  componentDidMount() {
-    
-  }
+  componentDidMount() {}
 
   //send New Deck of cards to the back end
   sendNewDeck = (cards) => {
     console.log("I'm updating the back end with the new deck of cards");
-    this.match_channel.sendShuffle({cards: cards})
-    
+    this.match_channel.sendShuffle({ cards: cards });
   };
 
   // add the new deck of cards into state
   updateCardsState = (data) => {
     // console.log(data['cards'])
     this.setState({
-      cards: data['cards'],
+      cards: data["cards"],
     });
   };
 
@@ -404,25 +393,22 @@ class Game extends Component {
         });
       }, 500);
     }
-    if (prevProps !== this.props){
+    if (prevProps !== this.props) {
       // console.log('prop update')
-      if ((this.props.userColor === "Red") && (this.state.cards.length === 0)){
-        console.log('shuffling')
-        const shuffled = CARDS.sort(() => 0.5 - Math.random())
+      if (this.props.userColor === "Red" && this.state.cards.length === 0) {
+        console.log("shuffling");
+        const shuffled = CARDS.sort(() => 0.5 - Math.random());
         // Get sub-array of first n elements after shuffled
         let cards = shuffled.slice(0, 5).map((card, i) => {
-          card.location = i
-          return card
-        })
-        this.sendNewDeck(cards)
-      }else{
-        this.match_channel.perform('getLastMove')
+          card.location = i;
+          return card;
+        });
+        this.sendNewDeck(cards);
+      } else {
+        this.match_channel.perform("getLastMove");
       }
-
+    }
   }
-  
-
-}
 
   //flip board for Red player
   isRed = () => {

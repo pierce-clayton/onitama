@@ -1,10 +1,20 @@
-import React from 'react'
+import React, { useState } from "react";
+import PlayerInfo from "./PlayerInfo";
+import EditPlayer from "./EditPlayer";
 
-export default function Dashboard(props) {
+const Dashboard = (props) => {
+  const [showEdit, setShowEdit] = useState(false);
+  const btnText = showEdit ? "Show Profile" : "Edit Profile";
   return (
     <div>
-        Dashboard
-        <h3>{props.loggedIn}</h3>
+      <p className="title is-4">Welcome, {props.user.user_name}</p>
+      {showEdit ? <EditPlayer user={props.user.user_name} /> : null}
+      <button className="button" onClick={() => setShowEdit(!showEdit)}>
+        {btnText}
+      </button>
+      <button className="button">Ready To Play</button>
     </div>
-  )
-}
+  );
+};
+
+export default Dashboard;

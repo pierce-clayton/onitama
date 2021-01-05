@@ -34,6 +34,10 @@ html {
     text-align: center;
     position: fixed;
 }
+.or {
+padding:35px;
+}
+
 .tile.is-ancestor:nth-child(2n + 1) > .tile > .tile.invalid:nth-child(2n),
 .tile.is-ancestor:nth-child(2n) > .tile > .tile.invalid:nth-child(2n + 1) {
   background-color: rgba(141,168,155, 0.7);

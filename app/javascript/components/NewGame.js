@@ -1,8 +1,8 @@
 import React from "react";
 const NewGame = () => {
   return (
-    <div>
-      <div className="has-text-centered">
+    <div className="box">
+      <div className=" has-text-centered">
         <h2 className="title is-2 ">Game Rules:</h2>
         <p className="subtitle is-6 ">
           1. On your turn, examine and choose one of the two Move cards in front
@@ -31,6 +31,7 @@ const NewGame = () => {
           cards you can choose from .
         </p>
       </div>
+
       {/* <div className="buttons is-centered">
         <button className="button is-primary"> NEW GAME</button>
       </div> */}
