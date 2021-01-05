@@ -1,12 +1,10 @@
 import React, { Component } from "react";
 import { Route, Switch, NavLink } from "react-router-dom";
-import LandingPage from "./LandingPage";
 import Game from "../containers/Game";
 import Home from "./Home";
-import Dashboard from "./Dashboard";
 import axios from "axios";
 import { reactLocalStorage } from "reactjs-localstorage";
-import PlayerInfo from "./PlayerInfo";
+import Dashboard from "./Dashboard";
 
 export default class App extends Component {
   constructor(props) {
@@ -95,12 +93,6 @@ export default class App extends Component {
             exact
             path="/"
             render={(props) => (
-              // <LogIn handleLogin={this.handleLogin}/>,
-              // <LandingPage
-              //   handleLogin={this.handleLogin}
-              //   user_name={this.state.user_name}
-              //   playerColor={this.whatColor()}
-              // />
               <Home
                 {...props}
                 handleLogin={this.handleLogin}
@@ -114,7 +106,7 @@ export default class App extends Component {
             exact
             path="/dashboard"
             render={(props) => (
-              <PlayerInfo
+              <Dashboard
                 {...props}
                 handleSuccessfulAuth={this.handleSuccessfulAuth}
                 loggedIn={this.state.loggedIn}

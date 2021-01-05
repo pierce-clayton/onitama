@@ -16,24 +16,21 @@ const LandingPage = ({ handleSuccessfulAuth }) => {
       <div className="columns">
         <div className="column ">
           <Login handleSuccessfulAuth={handleSuccessfulAuth} />
-          <section style={{ display: "flex", justifyContent: "center" }}>
-            <h1>
-              <strong>Or</strong>
-            </h1>
+          <section
+            className="or"
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <h2 className="title is-4">Or</h2>
           </section>
           <Registration handleSuccessfulAuth={handleSuccessfulAuth} />
         </div>
         <div className="column">
           <NewGame />
         </div>
-        {/* <div className="column is-one-quarter"> */}
-        {/* <Player
-            player={2}
-            user={props.user2}
-            setUser={props.setUser2}
-            handleLogin={props.handleLogin}
-          /> */}
-        {/* </div> */}
       </div>
     </div>
   );

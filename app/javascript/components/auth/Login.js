@@ -12,7 +12,6 @@ export default class Login extends Component {
   }
 
   handleSubmit = (e) => {
-    console.log("HANdLE");
     e.preventDefault();
     axios
       .post(
@@ -43,7 +42,7 @@ export default class Login extends Component {
   render() {
     console.log("render");
     return (
-      <div style={{ display: "flex", justifyContent: "center" }}>
+      <div>
         <div
           style={{
             display: "flex",
@@ -56,7 +55,6 @@ export default class Login extends Component {
             <div className="field ">
               <div className="control">
                 <input
-                  // className={`input ${className}`}
                   className="is-centered"
                   type="text"
                   placeholder="Username"
@@ -70,7 +68,6 @@ export default class Login extends Component {
             <div className="field">
               <div className="control">
                 <input
-                  // className={`input ${className}`}
                   type="password"
                   placeholder="Password"
                   value={this.state.password}

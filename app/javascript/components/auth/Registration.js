@@ -46,7 +46,7 @@ export default class Registration extends Component {
 
   render() {
     return (
-      <div style={{ display: "flex", justifyContent: "center" }}>
+      <div>
         <div
           style={{
             display: "flex",
@@ -55,11 +55,10 @@ export default class Registration extends Component {
           }}
         >
           <form onSubmit={this.handleSubmit}>
-            <h2 className="title is-4">Create an Account</h2>
+            <h2 className="title is-4">New Account</h2>
             <div className="field ">
               <div className="control">
                 <input
-                  // className={`input ${className}`}
                   className="is-centered"
                   type="text"
                   placeholder="Username"
@@ -73,7 +72,6 @@ export default class Registration extends Component {
             <div className="field">
               <div className="control">
                 <input
-                  // className={`input ${className}`}
                   type="password"
                   placeholder="Password"
                   name="password"
