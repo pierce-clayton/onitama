@@ -26,12 +26,6 @@ export default class Home extends Component {
           Logout
         </button>
         <LandingPage handleSuccessfulAuth={this.handleSuccessfulAuth} />
-        {/* <Registration
-        handleSuccessfulAuth={this.handleSuccessfulAuth}
-        />
-        <Login
-        handleSuccessfulAuth={this.handleSuccessfulAuth}
-        /> */}
       </div>
     );
   }
