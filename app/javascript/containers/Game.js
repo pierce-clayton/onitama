@@ -14,6 +14,7 @@ class Game extends Component {
       selectedCard: {},
       selectedPiece: {},
       validMoves: [],
+      match: false,
       board: [
         ["Rs1", "Rs2", "Rm", "Rs3", "Rs4"],
         [0, 0, 0, 0, 0],
@@ -41,6 +42,11 @@ class Game extends Component {
       {
         connected: () => {
           console.log("connected to match channel ");
+          this.state.match = true;
+          // if (this.props.userColor === "Red" && this.state.cards.length === 0) {
+          //   console.log("Upper shuffle");
+          //   this.setState({ ...this.state, match: true });
+          // }
         },
         received: (data) => {
           if (data.message) {
@@ -58,7 +64,7 @@ class Game extends Component {
           if (data.shuffle) {
             this.updateCardsState(data.shuffle);
           }
-          this.restoreBoard(data);
+          //this.restoreBoard(data);
         },
         sendSelectedCard: (card) => {
           this.match_channel.perform("sendSelectedCard", card);
@@ -381,16 +387,31 @@ class Game extends Component {
 
   //send New Deck of cards to the back end
   sendNewDeck = (cards) => {
+    let firstPlayer = Math.random() > 0.5 ? "red" : "blue";
     console.log("I'm updating the back end with the new deck of cards");
-    this.match_channel.sendShuffle({ cards: cards });
+    this.match_channel.sendShuffle({
+      cards: cards,
+      currentPlayer: firstPlayer,
+    });
   };
   // add the new deck of cards into state
   updateCardsState = (data) => {
     // console.log(data['cards'])
-    debugger;
     this.setState({
+      ...this.state,
       cards: data["cards"],
+      currentPlayer: data["currentPlayer"],
     });
+  };
+
+  makeRandomDeck = () => {
+    const shuffled = CARDS.sort(() => 0.5 - Math.random());
+    // Get sub-array of first n elements after shuffled
+    let cards = shuffled.slice(0, 5).map((card, i) => {
+      card.location = i;
+      return card;
+    });
+    this.sendNewDeck(cards);
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -409,6 +430,7 @@ class Game extends Component {
 
     if (prevProps !== this.props) {
       // console.log('prop update')
+
       if (this.props.userColor === "Red" && this.state.cards.length === 0) {
         console.log("shuffling");
         const shuffled = CARDS.sort(() => 0.5 - Math.random());
@@ -417,8 +439,8 @@ class Game extends Component {
           card.location = i;
           return card;
         });
-
         this.sendNewDeck(cards);
+        // setTimeout(() => this.sendNewDeck(cards), 2000);
       } else {
         this.match_channel.perform("getLastMove");
       }
@@ -434,17 +456,30 @@ class Game extends Component {
     return gameClass;
   };
 
+  shuffleButton = () => {
+    let btnClass = this.props.userColor === "Red" ? "unflip-vertical" : "btn";
+    return (
+      <button className={`button ${btnClass}`} onClick={this.makeRandomDeck}>
+        Deal Cards
+      </button>
+    );
+  };
+
   render() {
     return (
       <div className={this.isRed()}>
         <div className="column is-2 is-offset-1">
-          <Card
-            transition={this.state.transition}
-            cardRef={(el) => (this.cardRef5 = el)}
-            flip={true}
-            card={this.findCardByLoc(5)}
-            selectCard={this.selectCard}
-          />
+          {!this.state.cards.length ? (
+            this.shuffleButton()
+          ) : (
+            <Card
+              transition={this.state.transition}
+              cardRef={(el) => (this.cardRef5 = el)}
+              flip={true}
+              card={this.findCardByLoc(5)}
+              selectCard={this.selectCard}
+            />
+          )}
         </div>
         <div className="column is-4">
           <PlayerCards
