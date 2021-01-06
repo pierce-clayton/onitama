@@ -44,10 +44,6 @@ class Game extends Component {
         connected: () => {
           console.log("connected to match channel ");
           this.state.match = true;
-          // if (this.props.userColor === "Red" && this.state.cards.length === 0) {
-          //   console.log("Upper shuffle");
-          //   this.setState({ ...this.state, match: true });
-          // }
         },
         received: (data) => {
           if (data.message) {
@@ -65,7 +61,6 @@ class Game extends Component {
           if (data.shuffle) {
             this.updateCardsState(data.shuffle);
           }
-          //this.restoreBoard(data);
         },
         sendSelectedCard: (card) => {
           this.match_channel.perform("sendSelectedCard", card);
@@ -83,17 +78,18 @@ class Game extends Component {
     );
   }
   componentDidMount = () => {
-    const pS = reactLocalStorage.getObject('state')
-    const nP = reactLocalStorage.getObject('newPlayer')
-    if (!!pS){
+    const pS = reactLocalStorage.getObject("state");
+    const nP = reactLocalStorage.getObject("newPlayer");
+    if (!!pS) {
       this.setState({
-        ...pS
-      })
-      // this.setState({
-      //   currentPlayer: nP
-      // })
+        ...pS,
+        currentPlayer: nP,
+        selectedCard: {},
+        selectedPiece: {},
+        validMoves: [],
+      });
     }
-  }
+  };
 
   // define blue side as default down and left most card of blue team being location 0 increasing counter clockwise
   // with the exception that the cards on the top being reversed:
@@ -362,11 +358,11 @@ class Game extends Component {
       }
     });
   };
-  
+
   //update board after a move is made on the backend
   sendMove({ prevState, newPlayer }) {
-    reactLocalStorage.setObject('state', prevState)
-    reactLocalStorage.setObject('newPlayer', newPlayer)
+    reactLocalStorage.setObject("state", prevState);
+    reactLocalStorage.setObject("newPlayer", newPlayer);
     this.setState({
       board: [...prevState.board],
       currentPlayer: newPlayer,
