@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import EditPlayer from "./EditPlayer";
 import Waiting from "./Waiting";
 
 const Dashboard = (props) => {
   const [showEdit, setShowEdit] = useState(false);
-  // const [readyToPlay, setReadyToPlay] = useState(false);
+  const [readyToPlay, setReadyToPlay] = useState(false);
 
   const btnText = showEdit ? "Show Profile" : "Edit Profile";
   const handlesCompletion = () => {
@@ -12,11 +12,23 @@ const Dashboard = (props) => {
     props.onUserRefresh();
   };
 
+  const broadcastReady = () => {
+    props.join_game(props);
+    setReadyToPlay(true);
+  };
+
+  useEffect(() => {
+    if (props.game.id && readyToPlay) {
+      props.history.push("/onitama");
+    }
+  });
+
   return (
     <div className="container">
       <div className="row">
         <div className="col-sm" style={{ width: 500 }}>
           <p className="title is-4">Welcome, {props.user.user_name}</p>
+          {props.game.id ? <h1>"GAAAAAMMMEEE</h1> : null}
 
           {showEdit ? (
             <EditPlayer
@@ -26,15 +38,13 @@ const Dashboard = (props) => {
             />
           ) : null}
         </div>
-        <button className="button" onClick={() => setShowEdit(!showEdit)}>
+        <button className="button" onClick={() => setShowEdit(true)}>
           {btnText}
         </button>
-        rail
-        <button className="button">
-          {/* onClick={() => setReadyToPlay(true)} */}
+        <button className="button" onClick={broadcastReady}>
           Ready To Play
         </button>
-        {/* {readyToPlay ? <Waiting /> : null} */}
+        {readyToPlay ? <Waiting /> : null}
       </div>
     </div>
   );

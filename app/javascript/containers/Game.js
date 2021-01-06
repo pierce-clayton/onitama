@@ -383,8 +383,6 @@ class Game extends Component {
     }
   };
 
-  componentDidMount() {}
-
   //send New Deck of cards to the back end
   sendNewDeck = (cards) => {
     let firstPlayer = Math.random() > 0.5 ? "red" : "blue";

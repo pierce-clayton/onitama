@@ -75,7 +75,7 @@ export default class App extends Component {
 
   handleLogin = (data) => {
     this.setState({ loggedIn: "LOGGED_IN", user: data.user });
-    this.channel.joined_game(data);
+    // this.channel.joined_game(data);
   };
   handleLogout = () => {
     reactLocalStorage.clear();
@@ -115,6 +115,8 @@ export default class App extends Component {
                 loggedIn={this.state.loggedIn}
                 user={this.state.user}
                 onUserRefresh={this.handleUserRefresh}
+                game={this.state.game}
+                join_game={this.channel.joined_game}
               />
             )}
           />
