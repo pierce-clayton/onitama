@@ -90,16 +90,3 @@ export default class Login extends Component {
     );
   }
 }
-
-//   return (
-//     <div>
-//       <form onSubmit={this.handleSubmit}>
-//         <input type="text" name='user_name' placeholder="User Name" value={this.state.user_name} onChange={this.handleChange} required />
-//         <input type="password" name='password' placeholder="Password" value={this.state.password} onChange={this.handleChange} required />
-//         <button type='submit'>Login</button>
-//       </form>
-
-//     </div>
-//   )
-// }
-// }

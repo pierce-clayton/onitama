@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import PlayerInfo from "./PlayerInfo";
 import EditPlayer from "./EditPlayer";
 
 const Dashboard = (props) => {

@@ -10,23 +10,24 @@ class MatchChannel < ApplicationCable::Channel
   end
 
   def sendSelectedCard(card)
-    broadcast_to @game, card: card['newCard']
+    broadcast_to @game, card: card["newCard"]
   end
 
   def sendValidMoves(moves)
-    broadcast_to @game, moves['newMoves']
+    broadcast_to @game, moves["newMoves"]
   end
 
   def sendMove(board)
-   
     @game.moves.create!(board_state: board)
     broadcast_to @game, board
   end
+
   def sendShuffle(cards)
     broadcast_to @game, shuffle: cards
   end
+
   def getLastMove
-    puts '*' * 30
-    broadcast_to @game, @game.moves.last.board_state 
+    puts "*" * 30
+    broadcast_to @game, @game.moves.last.board_state
   end
 end

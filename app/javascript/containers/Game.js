@@ -58,6 +58,7 @@ class Game extends Component {
           if (data.shuffle) {
             this.updateCardsState(data.shuffle);
           }
+          this.restoreBoard(data);
         },
         sendSelectedCard: (card) => {
           this.match_channel.perform("sendSelectedCard", card);
@@ -82,6 +83,18 @@ class Game extends Component {
   //      [ bluBoard ]  2
   //          0    1
   //
+
+  restoreBoard = (data) => {
+    const bStart = data.match('board"=>').index + 8;
+    const bEnd = data.match("cards").index - 3;
+    const board = JSON.parse(data.slice(bStart, bEnd));
+    console.log(board);
+    this.setState({
+      ...this.state,
+      board,
+    });
+  };
+
   findCardByLoc = (loc) => {
     return this.state.cards.find((card) => card.location === loc);
   };
@@ -371,10 +384,10 @@ class Game extends Component {
     console.log("I'm updating the back end with the new deck of cards");
     this.match_channel.sendShuffle({ cards: cards });
   };
-
   // add the new deck of cards into state
   updateCardsState = (data) => {
     // console.log(data['cards'])
+    debugger;
     this.setState({
       cards: data["cards"],
     });
@@ -393,6 +406,7 @@ class Game extends Component {
         });
       }, 500);
     }
+
     if (prevProps !== this.props) {
       // console.log('prop update')
       if (this.props.userColor === "Red" && this.state.cards.length === 0) {
@@ -403,6 +417,7 @@ class Game extends Component {
           card.location = i;
           return card;
         });
+
         this.sendNewDeck(cards);
       } else {
         this.match_channel.perform("getLastMove");
@@ -422,7 +437,7 @@ class Game extends Component {
   render() {
     return (
       <div className={this.isRed()}>
-        <div className="column is-1 is-offset-1">
+        <div className="column is-2 is-offset-1">
           <Card
             transition={this.state.transition}
             cardRef={(el) => (this.cardRef5 = el)}

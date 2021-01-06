@@ -51,7 +51,6 @@ padding:35px;
   transition: transform 0s;
   width: 7rem;
   border-radius: 6px;
-  box-shadow: 0 0.5em 1em -0.125em 0 0px 0 1px 0.02;
 }
 
 .game-card.selected {
@@ -75,7 +74,7 @@ padding:35px;
 }
 /* set game piece size */
 figure.image.board-square.is-square {
-  width: 3rem;
+  width: 65%;
 }
 /* center game piece in board square */
 .is-horizontal-center {

@@ -13,7 +13,7 @@ const PlayerCards = ({
 }) => {
   return (
     <div className="columns is-mobile">
-      <div className="column is-4 is-offset-6">
+      <div className="column is-6 is-offset-5">
         <Card
           transition={transition}
           cardRef={cardRefL}
@@ -23,7 +23,7 @@ const PlayerCards = ({
           selectedCard={selectedCard}
         />
       </div>
-      <div className="column is-4">
+      <div className="column is-6">
         <Card
           transition={transition}
           cardRef={cardRefR}

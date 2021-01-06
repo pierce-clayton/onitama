@@ -24,6 +24,9 @@ const Card = ({
   }
   // invert cards facing the opposing player
   let imgClass = flip ? "card-image flip-vertical" : "card-image";
+  // keep cards equal size
+  let locClass =
+    card?.location === 2 || card?.location === 5 ? "next-card" : "";
 
   // if the current card is a moving card from a palyers had set it's location to it's previous lcoation
   if (card && transition.playerCard.card?.name === card.name) {
@@ -61,12 +64,12 @@ const Card = ({
       }}
     >
       <div
-        className={`${divClass} ${animClassY}`}
+        className={`${animClassY}`}
         style={{
           transform: `translateY(${startTop}px)`,
         }}
       >
-        <figure className={`image game-card is-4by3`}>
+        <figure className={`image is-4by3`}>
           {card ? (
             <img
               src={require(`images/${card.name}.jpg`)}
