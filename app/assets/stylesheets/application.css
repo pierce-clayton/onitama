@@ -29,18 +29,18 @@ html {
 }
 
 .foot {
-    left: 0;
-    bottom: 0;
-    text-align: center;
-    position: fixed;
+  left: 0;
+  bottom: 0;
+  text-align: center;
+  position: fixed;
 }
 .or {
-padding:35px;
+  padding: 35px;
 }
 
 .tile.is-ancestor:nth-child(2n + 1) > .tile > .tile.invalid:nth-child(2n),
 .tile.is-ancestor:nth-child(2n) > .tile > .tile.invalid:nth-child(2n + 1) {
-  background-color: rgba(141,168,155, 0.7);
+  background-color: rgba(141, 168, 155, 0.7);
 }
 
 .column.board {
@@ -63,11 +63,11 @@ padding:35px;
 }
 
 .flip-vertical {
-  transform: rotate(0.5turn)
+  transform: rotate(0.5turn);
 }
 
 .unflip-vertical {
-  transform: rotate(0.5turn)
+  transform: rotate(0.5turn);
 }
 
 .tile.valid {

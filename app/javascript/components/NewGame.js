@@ -31,10 +31,6 @@ const NewGame = () => {
           cards you can choose from .
         </p>
       </div>
-
-      {/* <div className="buttons is-centered">
-        <button className="button is-primary"> NEW GAME</button>
-      </div> */}
     </div>
   );
 };

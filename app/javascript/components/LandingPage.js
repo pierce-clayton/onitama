@@ -1,6 +1,5 @@
 import React from "react";
 import NewGame from "./NewGame";
-import Player from "./Player";
 import Login from "./auth/Login";
 import Registration from "./auth/Registration";
 import Logo from "images/OnitamaLogo.svg.png";
