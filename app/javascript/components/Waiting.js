@@ -1,11 +1,11 @@
-import React, { Component } from 'react'
+import React, { Component } from "react";
 
 export default class Waiting extends Component {
   render() {
     return (
       <div>
-        <h1>Waiting Screen goes here</h1>
+        <h1>Waiting for other player...</h1>
       </div>
-    )
+    );
   }
 }

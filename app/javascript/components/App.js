@@ -58,7 +58,7 @@ export default class App extends Component {
     axios
       .get("http://localhost:3000/logged_in", { withCredentials: true })
       .then((res) => {
-        if (res.data.logged_in && this.state.loggedIn === "NOT_LOGGED_IN") {
+        if (res.data.logged_in) {
           this.setState({
             loggedIn: "LOGGED_IN",
             user: res.data.user,
@@ -84,11 +84,14 @@ export default class App extends Component {
       user: {},
     });
   };
+
+  handleUserRefresh = () => {
+    this.checkLoginStatus();
+  };
   render() {
     return (
       <div>
         <Switch>
-          {/* <Route exact path="/login"> */}
           <Route
             exact
             path="/"
@@ -111,6 +114,7 @@ export default class App extends Component {
                 handleSuccessfulAuth={this.handleSuccessfulAuth}
                 loggedIn={this.state.loggedIn}
                 user={this.state.user}
+                onUserRefresh={this.handleUserRefresh}
               />
             )}
           />
@@ -131,7 +135,10 @@ export default class App extends Component {
         </Switch>
         <div className="foot">
           <p>
-            <strong>Onitama</strong> by <a href="www.google.com">Cool people</a>
+            <strong>Onitama</strong> by
+            <a href="https://github.com/wlytle"> Will Lytle</a>,
+            <a href="https://github.com/technicholy"> Clay Pierce </a>,
+            <a href="https://github.com/mandareis"> Amanda Reis</a>
           </p>
         </div>
       </div>
