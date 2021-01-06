@@ -3,6 +3,7 @@ import PlayerCards from "./PlayerCards";
 import Board from "../components/Board";
 import Card from "../components/Card";
 import { CARDS } from "../constants/index";
+import { reactLocalStorage } from "reactjs-localstorage";
 
 // for Backend: need piece_id, new pos, card_id
 
@@ -80,6 +81,18 @@ class Game extends Component {
         },
       }
     );
+  }
+  componentDidMount = () => {
+    const pS = reactLocalStorage.getObject('state')
+    const nP = reactLocalStorage.getObject('newPlayer')
+    if (!!pS){
+      this.setState({
+        ...pS
+      })
+      // this.setState({
+      //   currentPlayer: nP
+      // })
+    }
   }
 
   // define blue side as default down and left most card of blue team being location 0 increasing counter clockwise
@@ -349,9 +362,11 @@ class Game extends Component {
       }
     });
   };
-
+  
   //update board after a move is made on the backend
   sendMove({ prevState, newPlayer }) {
+    reactLocalStorage.setObject('state', prevState)
+    reactLocalStorage.setObject('newPlayer', newPlayer)
     this.setState({
       board: [...prevState.board],
       currentPlayer: newPlayer,
@@ -414,7 +429,7 @@ class Game extends Component {
     this.sendNewDeck(cards);
   };
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps, _) {
     //if the animation flag is false we reset it so cards will be animated to tbie rnew positions
     if (!this.state.transition.startAnim) {
       // update after a short delay so cards have a new position which will trigger the animation
