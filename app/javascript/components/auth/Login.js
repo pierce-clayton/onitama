@@ -8,6 +8,7 @@ export default class Login extends Component {
       user_name: "",
       password: "",
       loginErrors: "",
+      errorMessage: "",
     };
   }
 
@@ -26,6 +27,12 @@ export default class Login extends Component {
       )
       .then((res) => {
         console.log(res);
+        if (res.data.status === 401) {
+          this.setState({
+            ...this.state,
+            errorMessage: "Incorrect username or password",
+          });
+        }
         if (res.data.status === "created") {
           this.props.handleSuccessfulAuth(res.data);
         }
@@ -38,6 +45,12 @@ export default class Login extends Component {
       [e.target.name]: e.target.value,
     });
   };
+
+  // <div class="control has-icons-left has-icons-right">
+  // <input class="input is-danger" type="email" placeholder="Email input" value="hello@">
+  // <span class="icon is-small is-left">
+  //   <i class="fas fa-envelope"></i>
+  // </span>
 
   render() {
     console.log("render");
@@ -53,9 +66,11 @@ export default class Login extends Component {
           <form onSubmit={this.handleSubmit}>
             <h2 className="title is-4">Player Login</h2>
             <div className="field ">
-              <div className="control">
+              <div className="control has-icons-right">
                 <input
-                  className="is-centered"
+                  className={
+                    this.state.errorMessage.length ? "input is-danger" : "input"
+                  }
                   type="text"
                   placeholder="Username"
                   value={this.state.user_name}
@@ -63,11 +78,19 @@ export default class Login extends Component {
                   onChange={this.handleChange}
                   required
                 />
+                {this.state.errorMessage.length ? (
+                  <span className="icon is-small is-right">
+                    <i className="fas fa-exclamation-triangle"></i>
+                  </span>
+                ) : null}
               </div>
             </div>
             <div className="field">
-              <div className="control">
+              <div className="control has-icons-right">
                 <input
+                  className={
+                    this.state.errorMessage.length ? "input is-danger" : "input"
+                  }
                   type="password"
                   placeholder="Password"
                   value={this.state.password}
@@ -75,6 +98,12 @@ export default class Login extends Component {
                   onChange={this.handleChange}
                   required
                 ></input>
+                {this.state.errorMessage.length ? (
+                  <span className="icon is-small is-right">
+                    <i className="fas fa-exclamation-triangle"></i>
+                  </span>
+                ) : null}
+                <p className="help is-danger">{this.state.errorMessage}</p>
               </div>
             </div>
             <div className="field">

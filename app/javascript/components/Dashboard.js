@@ -38,7 +38,7 @@ const Dashboard = (props) => {
             />
           ) : null}
         </div>
-        <button className="button" onClick={() => setShowEdit(true)}>
+        <button className="button" onClick={() => setShowEdit(!showEdit)}>
           {btnText}
         </button>
         <button className="button" onClick={broadcastReady}>

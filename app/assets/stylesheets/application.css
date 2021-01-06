@@ -35,7 +35,7 @@ html {
   position: fixed;
 }
 .or {
-  padding: 35px;
+  padding: 15px;
 }
 
 .tile.is-ancestor:nth-child(2n + 1) > .tile > .tile.invalid:nth-child(2n),
