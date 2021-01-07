@@ -67,6 +67,7 @@ export default class App extends Component {
           this.setState({
             loggedIn: "NOT_LOGGED_IN",
             user: {},
+            game: {},
           });
         }
       })
@@ -75,7 +76,6 @@ export default class App extends Component {
 
   handleLogin = (data) => {
     this.setState({ loggedIn: "LOGGED_IN", user: data.user });
-    // this.channel.joined_game(data);
   };
   handleLogout = () => {
     reactLocalStorage.clear();

@@ -478,7 +478,7 @@ class Game extends Component {
     return (
       <div className={this.isRed()}>
         <div className="column is-2 is-offset-1">
-          <h3>{this.state.currentPlayer}</h3>
+          {/* <h3>{this.state.currentPlayer}</h3> */}
           {!this.state.cards.length ? (
             this.shuffleButton()
           ) : (
