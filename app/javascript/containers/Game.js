@@ -362,6 +362,8 @@ class Game extends Component {
   sendMove({ prevState, newPlayer }) {
     reactLocalStorage.setObject("state", prevState);
     reactLocalStorage.setObject("newPlayer", newPlayer);
+
+    this.props.setLogo(newPlayer);
     this.setState({
       board: [...prevState.board],
       currentPlayer: newPlayer,
@@ -477,9 +479,6 @@ class Game extends Component {
     return (
       <div className={this.isRed()}>
         <div className="column is-2 is-offset-1">
-          {this.state.currentPlayer.length ? (
-            <h3>{this.state.currentPlayer}</h3>
-          ) : null}
           {!this.state.cards.length ? (
             this.shuffleButton()
           ) : (

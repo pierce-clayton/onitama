@@ -26,20 +26,20 @@ const BoardSquare = ({
     case "Rs3":
     case "Rs3":
     case "Rs4":
-      piece_image = "gold_pawn";
+      piece_image = "red_student";
       break;
     case "Bs1":
     case "Bs2":
     case "Bs3":
     case "Bs3":
     case "Bs4":
-      piece_image = "black_pawn";
+      piece_image = "blue_student";
       break;
     case "Rm":
-      piece_image = "gold_queen";
+      piece_image = "red_master";
       break;
     case "Bm":
-      piece_image = "black_queen";
+      piece_image = "blue_master";
       break;
     default:
       piece_image = null;
@@ -57,13 +57,13 @@ const BoardSquare = ({
       onClick={handleClick}
     >
       <figure className="image board-square is-square">
-        {isTemple ? (
+        {isTemple && !piece_image ? (
           <img src={require("images/gate.png")} className={templeClass} />
         ) : null}
         {piece_image ? (
           <img
             src={require(`images/${piece_image}.png`)}
-            className={pieceClass}
+            className={` piece-image ${pieceClass}`}
             alt={piece_image}
           />
         ) : null}

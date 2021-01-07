@@ -76,6 +76,10 @@ html {
 figure.image.board-square.is-square {
   width: 65%;
 }
+
+img.piece-image.is-centered {
+  height: 90%
+}
 /* center game piece in board square */
 .is-horizontal-center {
   justify-content: center;

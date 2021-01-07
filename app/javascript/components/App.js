@@ -1,11 +1,13 @@
 import React, { Component } from "react";
 import { Route, Switch, Link } from "react-router-dom";
-import Game from "../containers/Game";
-import Home from "./Home";
-import LandingPage from "./LandingPage";
 import axios from "axios";
 import { reactLocalStorage } from "reactjs-localstorage";
+import LandingPage from "./LandingPage";
 import Dashboard from "./Dashboard";
+import Game from "../containers/Game";
+import Logo from "images/OnitamaLogo.svg.png";
+import LogoBlue from "images/OnitamaLogo_blue.svg.svg";
+import LogoRed from "images/OnitamaLogo_red.svg.svg";
 
 export default class App extends Component {
   constructor(props) {
@@ -16,6 +18,7 @@ export default class App extends Component {
       user: {},
       loggedIn: "NOT_LOGGED_IN",
       showNav: false,
+      logo: Logo,
     };
   }
 
@@ -50,10 +53,16 @@ export default class App extends Component {
   };
 
   handleGameWon = (game) => {
+    console.log("game over");
     this.setState((_) => ({
       game: {},
     }));
     reactLocalStorage.clear();
+  };
+
+  //handle a palyer foritting the game
+  forfit = () => {
+    this.handleGameWon();
   };
 
   checkLoginStatus = () => {
@@ -98,6 +107,7 @@ export default class App extends Component {
     this.setState({
       loggedIn: "NOT_LOGGED_IN",
       user: {},
+      game: {},
     });
   };
 
@@ -117,18 +127,25 @@ export default class App extends Component {
       this.handleLogoutClick();
     }
   };
+
+  setLogo = (cp = null) => {
+    switch (cp) {
+      case "red":
+        return this.setState({ ...this.state, logo: LogoRed });
+      case "blue":
+        return this.setState({ ...this.state, logo: LogoBlue });
+      default:
+        return this.setState({ ...this.state, logo: Logo });
+    }
+  };
   render() {
     return (
       <div>
         <nav className="navbar" role="navigation" aria-label="main navigation">
           <div className="navbar-brand">
-            <a className="navbar-item" href="https://bulma.io">
-              <img
-                src="https://bulma.io/images/bulma-logo.png"
-                width="112"
-                height="28"
-              />
-            </a>
+            <Link className="navbar-item" to="/">
+              <img src={this.state.logo} width="112" height="28" />
+            </Link>
 
             <a
               role="button"
@@ -166,7 +183,14 @@ export default class App extends Component {
               </Link>
 
               {this.state.game.id ? (
-                <a className="navbar-item"> Forfit Game </a>
+                <Link
+                  to="/dashboard"
+                  className="navbar-item"
+                  onClick={this.forfit}
+                >
+                  {" "}
+                  Forfit Game{" "}
+                </Link>
               ) : null}
             </div>
           </div>
@@ -212,6 +236,7 @@ export default class App extends Component {
                 game={this.state.game}
                 user={this.state.user}
                 userColor={this.whatColor()}
+                setLogo={this.setLogo}
               />
             )}
           />
