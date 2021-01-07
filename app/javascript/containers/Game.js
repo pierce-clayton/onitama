@@ -63,6 +63,7 @@ class Game extends Component {
           }
           if (data.winner) {
             this.history.push('/dashboard')
+            reactLocalStorage.clear()
           }
         },
         sendSelectedCard: (card) => {
