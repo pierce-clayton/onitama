@@ -30,4 +30,10 @@ class MatchChannel < ApplicationCable::Channel
     puts "*" * 30
     broadcast_to @game, @game.moves.last.board_state
   end
+
+  def wonGame(user)
+    winner = User.find_by(id: user.id)
+    @game.winning_user = winner
+    broadcast_to @game, winner: winner
+  end
 end

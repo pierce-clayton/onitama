@@ -61,6 +61,9 @@ class Game extends Component {
           if (data.shuffle) {
             this.updateCardsState(data.shuffle);
           }
+          if (data.winner) {
+            this.history.push('/dashboard')
+          }
         },
         sendSelectedCard: (card) => {
           this.match_channel.perform("sendSelectedCard", card);
@@ -74,6 +77,9 @@ class Game extends Component {
         sendShuffle: (cards) => {
           this.match_channel.perform("sendShuffle", cards);
         },
+        wonGame: (user) => {
+          this.match_channel.perform("wonGame", user);
+        }
       }
     );
   }
@@ -243,6 +249,7 @@ class Game extends Component {
         // check if move will wnd the game
         if (this.isGameOver(prevState, move)) {
           window.alert(`${prevState.currentPlayer} Wins!`);
+          this.match_channel.wonGame(this.props.user)
         }
         // move selected piece to new square and empty out current square
         prevState.board[row][col] = prevState.selectedPiece.id;
