@@ -46,14 +46,12 @@ export default class Login extends Component {
     });
   };
 
-  // <div class="control has-icons-left has-icons-right">
-  // <input class="input is-danger" type="email" placeholder="Email input" value="hello@">
-  // <span class="icon is-small is-left">
-  //   <i class="fas fa-envelope"></i>
-  // </span>
+  componentDidUpdate() {
+    if (this.props.loggedIn === "LOGGED_IN")
+      this.props.history.push("/dashboard");
+  }
 
   render() {
-    console.log("render");
     return (
       <div>
         <div
@@ -108,7 +106,7 @@ export default class Login extends Component {
             </div>
             <div className="field">
               <div className="control">
-                <button className={`button`} type="submit">
+                <button className="button" type="submit">
                   Go
                 </button>
               </div>

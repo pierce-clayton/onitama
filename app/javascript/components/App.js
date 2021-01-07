@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import { Route, Switch, NavLink } from "react-router-dom";
+import { Route, Switch, Link } from "react-router-dom";
 import Game from "../containers/Game";
 import Home from "./Home";
+import LandingPage from "./LandingPage";
 import axios from "axios";
 import { reactLocalStorage } from "reactjs-localstorage";
 import Dashboard from "./Dashboard";
@@ -14,6 +15,7 @@ export default class App extends Component {
       game: reactLocalStorage.getObject("game") || {},
       user: {},
       loggedIn: "NOT_LOGGED_IN",
+      showNav: false,
     };
   }
 
@@ -73,6 +75,21 @@ export default class App extends Component {
       .catch((err) => console.log(err));
   };
 
+  // handle successful login
+  handleSuccessfulAuth = (data) => {
+    this.handleLogin(data);
+  };
+
+  //log the user out
+  handleLogoutClick = (_) => {
+    axios
+      .delete("http://localhost:3000/logout", { withCredentials: true })
+      .then((res) => {
+        this.handleLogout();
+      })
+      .catch((err) => console.error(err));
+  };
+
   handleLogin = (data) => {
     this.setState({ loggedIn: "LOGGED_IN", user: data.user });
   };
@@ -87,15 +104,80 @@ export default class App extends Component {
   handleUserRefresh = () => {
     this.checkLoginStatus();
   };
+
+  showNav = () => {
+    this.setState({
+      ...this.state,
+      showNav: !this.state.showNav,
+    });
+  };
+
+  handleLogClick = (e) => {
+    if (this.state.loggedIn === "LOGGED_IN") {
+      this.handleLogoutClick();
+    }
+  };
   render() {
     return (
       <div>
+        <nav className="navbar" role="navigation" aria-label="main navigation">
+          <div className="navbar-brand">
+            <a className="navbar-item" href="https://bulma.io">
+              <img
+                src="https://bulma.io/images/bulma-logo.png"
+                width="112"
+                height="28"
+              />
+            </a>
+
+            <a
+              role="button"
+              className={
+                this.state.showNav ? "navbar-burger is-active" : "navbar-burger"
+              }
+              aria-label="menu"
+              aria-expanded="false"
+              data-target="navbarBasicExample"
+              onClick={this.showNav}
+            >
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+            </a>
+          </div>
+
+          <div
+            id="navbarBasicExample"
+            className={
+              this.state.showNav ? "navbar-menu is-active" : "navbar-menu"
+            }
+          >
+            <div className="navbar-start">
+              <Link
+                to="/"
+                className="navbar-item"
+                onClick={this.handleLogClick}
+              >
+                <strong>
+                  {this.state.loggedIn === "NOT_LOGGED_IN"
+                    ? "Login/Signup"
+                    : "Log Out"}
+                </strong>
+              </Link>
+
+              {this.state.game.id ? (
+                <a className="navbar-item"> Forfit Game </a>
+              ) : null}
+            </div>
+          </div>
+        </nav>
+
         <Switch>
           <Route
             exact
             path="/"
             render={(props) => (
-              <Home
+              <LandingPage
                 {...props}
                 handleLogin={this.handleLogin}
                 handleSuccessfulAuth={this.handleSuccessfulAuth}

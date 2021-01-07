@@ -21,7 +21,6 @@ export default class Home extends Component {
   render() {
     return (
       <div>
-        <h3>Status: {this.props.loggedIn}</h3>
         <button type="button" onClick={() => this.handleLogoutClick()}>
           Logout
         </button>

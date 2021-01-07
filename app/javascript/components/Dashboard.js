@@ -28,7 +28,9 @@ const Dashboard = (props) => {
       <div className="columns">
         <div className="row">
           <div className="col-sm" style={{ width: 500 }}>
-            <p className="title is-4">Welcome, {props.user.user_name}</p>
+            <p className=" welcome title is-4">
+              Welcome, {props.user.user_name}
+            </p>
             {showEdit ? (
               <EditPlayer
                 onComplete={handlesCompletion}
