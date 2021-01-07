@@ -362,7 +362,6 @@ class Game extends Component {
           prevState.transition.nextCard.startTop *= -1;
           prevState.transition.nextCard.startRight *= -1;
         }
-
         //send updated board to the backend
         this.match_channel.sendMove({ sendMove: { prevState, newPlayer } });
       }
@@ -373,6 +372,8 @@ class Game extends Component {
   sendMove({ prevState, newPlayer }) {
     reactLocalStorage.setObject("state", prevState);
     reactLocalStorage.setObject("newPlayer", newPlayer);
+
+    this.props.setLogo(newPlayer);
     this.setState({
       board: [...prevState.board],
       currentPlayer: newPlayer,
@@ -407,6 +408,7 @@ class Game extends Component {
   //send New Deck of cards to the back end
   sendNewDeck = (cards) => {
     let firstPlayer = Math.random() > 0.5 ? "red" : "blue";
+
     console.log("I'm updating the back end with the new deck of cards");
     this.match_channel.sendShuffle({
       cards: cards,
@@ -415,7 +417,7 @@ class Game extends Component {
   };
   // add the new deck of cards into state
   updateCardsState = (data) => {
-    // console.log(data['cards'])
+    this.props.setLogo(data["currentPlayer"]);
     this.setState({
       ...this.state,
       cards: data["cards"],

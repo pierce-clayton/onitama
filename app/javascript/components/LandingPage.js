@@ -4,7 +4,8 @@ import Login from "./auth/Login";
 import Registration from "./auth/Registration";
 import Logo from "images/OnitamaLogo.svg.png";
 
-const LandingPage = ({ handleSuccessfulAuth }) => {
+const LandingPage = (props) => {
+  const { handleSuccessfulAuth } = props;
   return (
     <div>
       <div className="is-centered">
@@ -14,7 +15,11 @@ const LandingPage = ({ handleSuccessfulAuth }) => {
       </div>
       <div className="columns">
         <div className="column ">
-          <Login handleSuccessfulAuth={handleSuccessfulAuth} />
+          <Login
+            {...props}
+            loggedIn={props.loggedIn}
+            handleSuccessfulAuth={handleSuccessfulAuth}
+          />
           <section
             className="or"
             style={{

@@ -1,10 +1,13 @@
 import React, { Component } from "react";
-import { Route, Switch, NavLink } from "react-router-dom";
-import Game from "../containers/Game";
-import Home from "./Home";
+import { Route, Switch, Link } from "react-router-dom";
 import axios from "axios";
 import { reactLocalStorage } from "reactjs-localstorage";
+import LandingPage from "./LandingPage";
 import Dashboard from "./Dashboard";
+import Game from "../containers/Game";
+import Logo from "images/OnitamaLogo.svg.svg";
+import LogoBlue from "images/OnitamaLogo_blue.svg.svg";
+import LogoRed from "images/OnitamaLogo_red.svg.svg";
 
 export default class App extends Component {
   constructor(props) {
@@ -14,6 +17,8 @@ export default class App extends Component {
       game: reactLocalStorage.getObject("game") || {},
       user: {},
       loggedIn: "NOT_LOGGED_IN",
+      showNav: false,
+      logo: Logo,
     };
   }
 
@@ -48,10 +53,16 @@ export default class App extends Component {
   };
 
   handleGameWon = (game) => {
+    console.log("game over");
     this.setState((_) => ({
       game: {},
     }));
     reactLocalStorage.clear();
+  };
+
+  //handle a palyer foritting the game
+  forfeit = () => {
+    this.handleGameWon();
   };
 
   checkLoginStatus = () => {
@@ -73,30 +84,126 @@ export default class App extends Component {
       .catch((err) => console.log(err));
   };
 
+  // handle successful login
+  handleSuccessfulAuth = (data) => {
+    this.handleLogin(data);
+  };
+
+  //log the user out
+  handleLogoutClick = (_) => {
+    axios
+      .delete("http://localhost:3000/logout", { withCredentials: true })
+      .then((res) => {
+        this.handleLogout();
+      })
+      .catch((err) => console.error(err));
+  };
+
   handleLogin = (data) => {
     this.setState({ loggedIn: "LOGGED_IN", user: data.user });
-    this.channel.joined_game(data);
+    // this.channel.joined_game(data);
   };
   handleLogout = () => {
     reactLocalStorage.clear();
     this.setState({
       loggedIn: "NOT_LOGGED_IN",
       user: {},
+      game: {},
     });
   };
 
   handleUserRefresh = () => {
     this.checkLoginStatus();
   };
+
+  showNav = () => {
+    this.setState({
+      ...this.state,
+      showNav: !this.state.showNav,
+    });
+  };
+
+  handleLogClick = (e) => {
+    if (this.state.loggedIn === "LOGGED_IN") {
+      this.handleLogoutClick();
+    }
+  };
+
+  setLogo = (cp = null) => {
+    console.log("go", cp);
+    switch (cp) {
+      case "red":
+        return this.setState({ ...this.state, logo: LogoRed });
+      case "blue":
+        return this.setState({ ...this.state, logo: LogoBlue });
+      default:
+        return this.setState({ ...this.state, logo: Logo });
+    }
+  };
   render() {
     return (
       <div>
+        <nav className="navbar" role="navigation" aria-label="main navigation">
+          <div className="navbar-brand">
+            <Link className="navbar-item" to="/">
+              <img src={this.state.logo} width="112" height="28" />
+            </Link>
+
+            <a
+              role="button"
+              className={
+                this.state.showNav ? "navbar-burger is-active" : "navbar-burger"
+              }
+              aria-label="menu"
+              aria-expanded="false"
+              data-target="navbarBasicExample"
+              onClick={this.showNav}
+            >
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+            </a>
+          </div>
+
+          <div
+            id="navbarBasicExample"
+            className={
+              this.state.showNav ? "navbar-menu is-active" : "navbar-menu"
+            }
+          >
+            <div className="navbar-start">
+              <Link
+                to="/"
+                className="navbar-item"
+                onClick={this.handleLogClick}
+              >
+                <strong>
+                  {this.state.loggedIn === "NOT_LOGGED_IN"
+                    ? "Login/Signup"
+                    : "Log Out"}
+                </strong>
+              </Link>
+
+              {this.state.game.id ? (
+                <Link
+                  to="/dashboard"
+                  className="navbar-item"
+                  onClick={this.forfeit}
+                >
+                  {" "}
+                  Forfeit Game{" "}
+                </Link>
+              ) : null}
+            </div>
+          </div>
+        </nav>
+
         <Switch>
           <Route
             exact
             path="/"
             render={(props) => (
-              <Home
+              <LandingPage
                 {...props}
                 handleLogin={this.handleLogin}
                 handleSuccessfulAuth={this.handleSuccessfulAuth}
@@ -131,6 +238,7 @@ export default class App extends Component {
                 game={this.state.game}
                 user={this.state.user}
                 userColor={this.whatColor()}
+                setLogo={this.setLogo}
               />
             )}
           />

@@ -35,7 +35,7 @@ html {
   position: fixed;
 }
 .or {
-  padding: 35px;
+  padding: 15px;
 }
 
 .tile.is-ancestor:nth-child(2n + 1) > .tile > .tile.invalid:nth-child(2n),
@@ -114,4 +114,11 @@ figure.image.board-square.is-square {
 .next-force-move-y {
   transition: transform 1.5s;
   transform: translateY(0) !important;
+}
+.navbar {
+  background-color: rgba(0, 0, 0, 0.0);
+}
+
+.welcome {
+  padding: 25px
 }
