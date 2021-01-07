@@ -25,26 +25,30 @@ const Dashboard = (props) => {
 
   return (
     <div className="container">
-      <div className="row">
-        <div className="col-sm" style={{ width: 500 }}>
-          <p className="title is-4">Welcome, {props.user.user_name}</p>
-          {props.game.id ? <h1>"GAAAAAMMMEEE</h1> : null}
-
-          {showEdit ? (
-            <EditPlayer
-              onComplete={handlesCompletion}
-              user={props.user}
-              history={props.history}
-            />
-          ) : null}
+      <div className="columns">
+        <div className="row">
+          <div className="col-sm" style={{ width: 500 }}>
+            <p className="title is-4">Welcome, {props.user.user_name}</p>
+            {showEdit ? (
+              <EditPlayer
+                onComplete={handlesCompletion}
+                user={props.user}
+                history={props.history}
+              />
+            ) : null}
+          </div>
+          {readyToPlay ? null : (
+            <>
+              <button className="button" onClick={() => setShowEdit(!showEdit)}>
+                {btnText}
+              </button>
+              <button className="button" onClick={broadcastReady}>
+                Ready To Play
+              </button>
+            </>
+          )}
+          {readyToPlay ? <Waiting /> : null}
         </div>
-        <button className="button" onClick={() => setShowEdit(!showEdit)}>
-          {btnText}
-        </button>
-        <button className="button" onClick={broadcastReady}>
-          Ready To Play
-        </button>
-        {readyToPlay ? <Waiting /> : null}
       </div>
     </div>
   );

@@ -352,7 +352,6 @@ class Game extends Component {
           prevState.transition.nextCard.startTop *= -1;
           prevState.transition.nextCard.startRight *= -1;
         }
-
         //send updated board to the backend
         this.match_channel.sendMove({ sendMove: { prevState, newPlayer } });
       }
@@ -478,7 +477,9 @@ class Game extends Component {
     return (
       <div className={this.isRed()}>
         <div className="column is-2 is-offset-1">
-          {/* <h3>{this.state.currentPlayer}</h3> */}
+          {this.state.currentPlayer.length ? (
+            <h3>{this.state.currentPlayer}</h3>
+          ) : null}
           {!this.state.cards.length ? (
             this.shuffleButton()
           ) : (

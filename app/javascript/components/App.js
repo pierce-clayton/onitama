@@ -67,7 +67,6 @@ export default class App extends Component {
           this.setState({
             loggedIn: "NOT_LOGGED_IN",
             user: {},
-            game: {},
           });
         }
       })
