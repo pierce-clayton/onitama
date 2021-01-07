@@ -61,6 +61,10 @@ class Game extends Component {
           if (data.shuffle) {
             this.updateCardsState(data.shuffle);
           }
+          if (data.winner) {
+            this.props.history.push('/dashboard')
+            reactLocalStorage.clear()
+          }
         },
         sendSelectedCard: (card) => {
           this.match_channel.perform("sendSelectedCard", card);
@@ -74,6 +78,9 @@ class Game extends Component {
         sendShuffle: (cards) => {
           this.match_channel.perform("sendShuffle", cards);
         },
+        wonGame: (user) => {
+          this.match_channel.perform("wonGame", user);
+        }
       }
     );
   }
@@ -90,7 +97,10 @@ class Game extends Component {
       });
     }
   };
-
+  componentWillUnmount = () => {
+    this.channel.unsubscribe()
+    this.match_channel.unsubscribe();
+  }
   // define blue side as default down and left most card of blue team being location 0 increasing counter clockwise
   // with the exception that the cards on the top being reversed:
   //          3    4
@@ -103,7 +113,6 @@ class Game extends Component {
     const bStart = data.match('board"=>').index + 8;
     const bEnd = data.match("cards").index - 3;
     const board = JSON.parse(data.slice(bStart, bEnd));
-    console.log(board);
     this.setState({
       ...this.state,
       board,
@@ -242,6 +251,7 @@ class Game extends Component {
         let nextStartRight;
         // check if move will wnd the game
         if (this.isGameOver(prevState, move)) {
+          this.match_channel.wonGame({ id: this.props.user.id })
           window.alert(`${prevState.currentPlayer} Wins!`);
         }
         // move selected piece to new square and empty out current square

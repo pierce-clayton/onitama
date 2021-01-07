@@ -5,6 +5,7 @@ class User < ApplicationRecord
 
   has_many :blue_games, class_name: 'Game', foreign_key: 'blue_user'
   has_many :red_games, class_name: 'Game', foreign_key: 'red_user'
+  has_many :won_games, class_name: 'Game', foreign_key: 'winning_user'
   
 
   def games
