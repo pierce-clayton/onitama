@@ -5,7 +5,7 @@ import { reactLocalStorage } from "reactjs-localstorage";
 import LandingPage from "./LandingPage";
 import Dashboard from "./Dashboard";
 import Game from "../containers/Game";
-import Logo from "images/OnitamaLogo.svg.png";
+import Logo from "images/OnitamaLogo.svg.svg";
 import LogoBlue from "images/OnitamaLogo_blue.svg.svg";
 import LogoRed from "images/OnitamaLogo_red.svg.svg";
 
@@ -61,7 +61,7 @@ export default class App extends Component {
   };
 
   //handle a palyer foritting the game
-  forfit = () => {
+  forfeit = () => {
     this.handleGameWon();
   };
 
@@ -129,6 +129,7 @@ export default class App extends Component {
   };
 
   setLogo = (cp = null) => {
+    console.log("go", cp);
     switch (cp) {
       case "red":
         return this.setState({ ...this.state, logo: LogoRed });
@@ -186,10 +187,10 @@ export default class App extends Component {
                 <Link
                   to="/dashboard"
                   className="navbar-item"
-                  onClick={this.forfit}
+                  onClick={this.forfeit}
                 >
                   {" "}
-                  Forfit Game{" "}
+                  Forfeit Game{" "}
                 </Link>
               ) : null}
             </div>

@@ -63,7 +63,7 @@ const BoardSquare = ({
         {piece_image ? (
           <img
             src={require(`images/${piece_image}.png`)}
-            className={` piece-image ${pieceClass}`}
+            className={`piece-image ${pieceClass}`}
             alt={piece_image}
           />
         ) : null}
