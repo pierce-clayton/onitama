@@ -62,7 +62,7 @@ export default class App extends Component {
 
   //handle a palyer foritting the game
   forfeit = () => {
-    this.setLogo(null);
+    this.showNav();
     this.handleGameWon();
   };
 
@@ -126,6 +126,7 @@ export default class App extends Component {
 
   handleLogClick = (e) => {
     if (this.state.loggedIn === "LOGGED_IN") {
+      this.showNav();
       this.handleLogoutClick();
     }
   };

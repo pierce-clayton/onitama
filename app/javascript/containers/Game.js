@@ -98,10 +98,12 @@ class Game extends Component {
       });
     }
   };
-  // componentWillUnmount = () => {
-  //   this.channel.unsubscribe();
-  //   this.match_channel.unsubscribe();
-  // };
+  componentWillUnmount = () => {
+    // this.channel.unsubscribe();
+    this.props.setLogo(null);
+    this.match_channel.unsubscribe();
+  };
+
   // define blue side as default down and left most card of blue team being location 0 increasing counter clockwise
   // with the exception that the cards on the top being reversed:
   //          3    4
