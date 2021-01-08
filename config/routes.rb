@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   get :logged_in, to: "sessions#logged_in"
   root "pages#index"
   match "*path", to: "pages#index", via: :all
-  get "/404", to: "pages#not_found"
-  # for /404 error page
+  # get "/404", to: "pages#not_found"
+  # for /404 error page ^
   # mount ActionCable.server => '/cable'
 end
