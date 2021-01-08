@@ -54,7 +54,7 @@ export default class App extends Component {
     // this.channel.unsubscribe()
   };
 
-  handleGameWon = (winner) => {
+  handleGameWon = () => {
     console.log("game over");
     this.setState({
       ...this.state,
@@ -235,9 +235,6 @@ export default class App extends Component {
             )}
           />
 
-          <Route>
-            <NotFound />
-          </Route>
           <Route
             exact
             path="/onitama"
@@ -255,6 +252,9 @@ export default class App extends Component {
               />
             )}
           />
+          <Route>
+            <NotFound />
+          </Route>
         </Switch>
         <div className="foot">
           <p>
