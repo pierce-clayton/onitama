@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Route, Switch, NavLink } from "react-router-dom";
 import Game from "../containers/Game";
-// import NotFound from "../components/NotFound";
+import NotFound from "../components/NotFound";
 import Home from "./Home";
 import axios from "axios";
 import { reactLocalStorage } from "reactjs-localstorage";
@@ -121,10 +121,10 @@ export default class App extends Component {
               />
             )}
           />
-          {/* route to 404 */}
-          {/* <Route>
+
+          <Route>
             <NotFound />
-          </Route> */}
+          </Route>
           <Route
             exact
             path="/onitama"
