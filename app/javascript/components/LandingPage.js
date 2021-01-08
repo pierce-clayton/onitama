@@ -30,7 +30,10 @@ const LandingPage = (props) => {
           >
             <h2 className="title is-4">Or</h2>
           </section>
-          <Registration handleSuccessfulAuth={handleSuccessfulAuth} />
+          <Registration
+            {...props}
+            handleSuccessfulAuth={handleSuccessfulAuth}
+          />
         </div>
         <div className="column">
           <NewGame />
