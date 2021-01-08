@@ -7,5 +7,7 @@ Rails.application.routes.draw do
   get "/users/:id/stats", to: "users#stats"
   root "pages#index"
   match "*path", to: "pages#index", via: :all
+  get "/404", to: "pages#not_found"
+  # for /404 error page ^
   # mount ActionCable.server => '/cable'
 end
