@@ -13,7 +13,9 @@ const NotFound = () => {
         <h1 className="error-title">BEWARE OF SAMURAI! </h1>
       </div>
       <Link to="/">
-        <button id="go-home-btn">GO BACK TO SAFETY</button>
+        <button className={`button`} type="button" id="go-home-btn">
+          GO BACK TO SAFETY
+        </button>
       </Link>
     </div>
   );
