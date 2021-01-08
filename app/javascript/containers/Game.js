@@ -63,7 +63,6 @@ class Game extends Component {
             this.updateCardsState(data.shuffle);
           }
           if (data.winner) {
-            console.log(data);
             window.alert(`${data.winner.user_name} Wins!`);
             this.props.history.push("/dashboard");
             reactLocalStorage.clear();

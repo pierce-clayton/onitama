@@ -60,8 +60,6 @@ class UsersController < ApplicationController
   end
 
   def stats
-    puts "<>" * 30
-    puts @user
     rank = 0
     ranks = User.all.map do |user|
       if user.games.length == 0
@@ -70,17 +68,13 @@ class UsersController < ApplicationController
         (Game.where(winning_user_id: user.id).length).to_f / (user.games.length).to_f
       end
     end
-
     ranks = ranks.sort.reverse
-    puts "<>" * 30
-    puts ranks
 
     if @user.games.length == 0
       user_rank = 0
     else
       user_rank = (Game.where(winning_user_id: @user.id).length).to_f / (@user.games.length).to_f
     end
-    puts "user Rank #{user_rank}"
     rank = ranks.index { |i| i == user_rank } + 1
     blue_games = Game.where(blue_user_id: @user.id).length
     red_games = Game.where(red_user_id: @user.id).length
