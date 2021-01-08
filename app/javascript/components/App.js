@@ -122,7 +122,6 @@ export default class App extends Component {
 
   showNav = () => {
     const nav = this.state.showNav;
-    console.log("NNNAAAAAAAV", !nav);
     this.setState({
       ...this.state,
       showNav: !nav,

@@ -133,3 +133,8 @@ li {
 .red {
   color: red;
 }
+
+.fadeOut {
+  transition: 1.5s;
+  opacity: 0;
+}

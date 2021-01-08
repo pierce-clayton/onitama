@@ -16,6 +16,7 @@ class Game extends Component {
       selectedPiece: {},
       validMoves: [],
       match: false,
+      won: false,
       board: [
         ["Rs1", "Rs2", "Rm", "Rs3", "Rs4"],
         [0, 0, 0, 0, 0],
@@ -62,6 +63,8 @@ class Game extends Component {
             this.updateCardsState(data.shuffle);
           }
           if (data.winner) {
+            console.log(data);
+            window.alert(`${data.winner.user_name} Wins!`);
             this.props.history.push("/dashboard");
             reactLocalStorage.clear();
           }
@@ -112,6 +115,11 @@ class Game extends Component {
   //      [ bluBoard ]  2
   //          0    1
   //
+
+  //display winner banner
+  showWinner = (user) => {
+    this.setState({ ...this.state, won: user });
+  };
 
   restoreBoard = (data) => {
     const bStart = data.match('board"=>').index + 8;
@@ -256,7 +264,6 @@ class Game extends Component {
         // check if move will wnd the game
         if (this.isGameOver(prevState, move)) {
           this.match_channel.wonGame({ id: this.props.user.id });
-          window.alert(`${prevState.currentPlayer} Wins!`);
         }
         // move selected piece to new square and empty out current square
         prevState.board[row][col] = prevState.selectedPiece.id;
@@ -450,11 +457,11 @@ class Game extends Component {
 
   componentDidUpdate(prevProps, _) {
     if (this.props.forfeit) {
-      console.log("FORFEIT");
+      //get id of non-forfeiting player
       const winnerId =
         this.props.game.red_user_id === this.props.user.id
-          ? this.props.game.red_user_id
-          : this.props.game.blue_user_id;
+          ? this.props.game.blue_user_id
+          : this.props.game.red_user_id;
       this.match_channel.wonGame({ id: winnerId });
     }
 
