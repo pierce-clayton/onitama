@@ -27,7 +27,13 @@ class MatchChannel < ApplicationCable::Channel
   end
 
   def getLastMove
-    puts "*" * 30
     broadcast_to @game, @game.moves.last.board_state
+  end
+
+  def wonGame(user)
+    winner = User.find_by(id: user["id"])
+    @game.winning_user = winner
+    @game.save
+    broadcast_to @game, winner: winner
   end
 end

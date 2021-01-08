@@ -16,6 +16,7 @@ class Game extends Component {
       selectedPiece: {},
       validMoves: [],
       match: false,
+      won: false,
       board: [
         ["Rs1", "Rs2", "Rm", "Rs3", "Rs4"],
         [0, 0, 0, 0, 0],
@@ -61,6 +62,12 @@ class Game extends Component {
           if (data.shuffle) {
             this.updateCardsState(data.shuffle);
           }
+          if (data.winner) {
+            console.log(data);
+            window.alert(`${data.winner.user_name} Wins!`);
+            this.props.history.push("/dashboard");
+            reactLocalStorage.clear();
+          }
         },
         sendSelectedCard: (card) => {
           this.match_channel.perform("sendSelectedCard", card);
@@ -74,12 +81,17 @@ class Game extends Component {
         sendShuffle: (cards) => {
           this.match_channel.perform("sendShuffle", cards);
         },
+        wonGame: (user) => {
+          this.props.handleGameWon();
+          this.match_channel.perform("wonGame", user);
+        },
       }
     );
   }
   componentDidMount = () => {
     const pS = reactLocalStorage.getObject("state");
     const nP = reactLocalStorage.getObject("newPlayer");
+    this.props.setLogo(nP);
     if (!!pS) {
       this.setState({
         ...pS,
@@ -89,6 +101,11 @@ class Game extends Component {
         validMoves: [],
       });
     }
+  };
+  componentWillUnmount = () => {
+    // this.channel.unsubscribe();
+    this.props.setLogo(null);
+    this.match_channel.unsubscribe();
   };
 
   // define blue side as default down and left most card of blue team being location 0 increasing counter clockwise
@@ -103,7 +120,6 @@ class Game extends Component {
     const bStart = data.match('board"=>').index + 8;
     const bEnd = data.match("cards").index - 3;
     const board = JSON.parse(data.slice(bStart, bEnd));
-    console.log(board);
     this.setState({
       ...this.state,
       board,
@@ -234,15 +250,11 @@ class Game extends Component {
     this.state.validMoves.forEach((move) => {
       //only allow move if it is a valid move
       if (move[0] === +col && move[1] === +row) {
-        //return this.setState((prevState) => {
+        //deeply clone state
         let prevState = JSON.parse(JSON.stringify(this.state));
-        let destinationCardTop;
-        let destinationCardRight;
-        let nextStartTop;
-        let nextStartRight;
         // check if move will wnd the game
         if (this.isGameOver(prevState, move)) {
-          window.alert(`${prevState.currentPlayer} Wins!`);
+          this.match_channel.wonGame({ id: this.props.user.id });
         }
         // move selected piece to new square and empty out current square
         prevState.board[row][col] = prevState.selectedPiece.id;
@@ -256,6 +268,7 @@ class Game extends Component {
         let currentCardLoc = +prevState.selectedCard.location;
         // keep a reference to this location for use with animations
         let cardRef = currentCardLoc;
+
         if (prevState.currentPlayer === "blue") {
           newPlayer = "red";
           prevState.transition.nextCard.card = this.findCardByLoc(2);
@@ -266,18 +279,6 @@ class Game extends Component {
               card.location = 5;
             }
           });
-
-          //find the next location of the selected card
-          destinationCardTop =
-            this.cardRef5.getBoundingClientRect().top +
-            document.documentElement.scrollTop;
-          destinationCardRight = this.cardRef5.getBoundingClientRect().right;
-          //find the location of the current 'next card'
-          nextStartTop =
-            this.cardRef2.getBoundingClientRect().top +
-            document.documentElement.scrollTop;
-
-          nextStartRight = this.cardRef2.getBoundingClientRect().right;
         } else {
           //set next player
           newPlayer = "blue";
@@ -290,67 +291,6 @@ class Game extends Component {
               card.location = 2;
             }
           });
-          // find the next location of the selected card
-          destinationCardTop =
-            this.cardRef2.getBoundingClientRect().top +
-            document.documentElement.scrollTop;
-          destinationCardRight = this.cardRef2.getBoundingClientRect().right;
-          //find the next location of the current 'next card'
-          nextStartTop =
-            this.cardRef5.getBoundingClientRect().top +
-            document.documentElement.scrollTop;
-
-          nextStartRight = this.cardRef5.getBoundingClientRect().right;
-        }
-
-        // get the ref to the selected card during this turn
-        let ref;
-        switch (cardRef) {
-          case 0:
-            ref = this.cardRef0;
-            break;
-          case 1:
-            ref = this.cardRef1;
-            break;
-          case 3:
-            ref = this.cardRef3;
-            break;
-          case 4:
-            ref = this.cardRef4;
-            break;
-        }
-
-        // return this.sendMove(prevState, newPlayer);
-        // Calculate the starting position of the currently selected card
-        const startingCardTop =
-          ref.getBoundingClientRect().top +
-          document.documentElement.scrollTop -
-          destinationCardTop;
-
-        const startingCardRight =
-          ref.getBoundingClientRect().right - destinationCardRight;
-        //set the transition state so the currenlty selected card knows it's location and
-        //set the animation flag to false so the moving cards stay put until they are forced
-        // to thier new position in compnent did update
-        prevState.transition.startAnim = false;
-        prevState.transition.playerCard.startTop = startingCardTop;
-        prevState.transition.playerCard.startRight = startingCardRight;
-        prevState.transition.playerCard.card = prevState.selectedCard;
-
-        prevState.transition.nextCard.startTop =
-          nextStartTop -
-          ref.getBoundingClientRect().top -
-          document.documentElement.scrollTop;
-
-        prevState.transition.nextCard.startRight =
-          nextStartRight - ref.getBoundingClientRect().right;
-
-        //adjust adnamtions for inverted board on redplayer side
-        if (this.props.userColor === "Red") {
-          prevState.transition.playerCard.startTop *= -1;
-          prevState.transition.playerCard.startRight *= -1;
-          prevState.transition.nextCard.startTop *= -1;
-          prevState.transition.nextCard.startRight *= -1;
         }
 
         //send updated board to the backend
@@ -359,10 +299,101 @@ class Game extends Component {
     });
   };
 
+  //Do all of the animation calculations independtly on each screen so that each players sees the propper animation.
+
+  animateCard = (prevState) => {
+    let destinationCardTop;
+    let destinationCardRight;
+    let nextStartTop;
+    let nextStartRight;
+
+    let cardRef = prevState.selectedCard.location;
+
+    if (prevState.currentPlayer === "blue") {
+      //find the next location of the selected card
+      destinationCardTop =
+        this.cardRef5.getBoundingClientRect().top +
+        document.documentElement.scrollTop;
+      destinationCardRight = this.cardRef5.getBoundingClientRect().right;
+      //find the location of the current 'next card'
+      nextStartTop =
+        this.cardRef2.getBoundingClientRect().top +
+        document.documentElement.scrollTop;
+
+      nextStartRight = this.cardRef2.getBoundingClientRect().right;
+    } else {
+      // find the next location of the selected card
+      destinationCardTop =
+        this.cardRef2.getBoundingClientRect().top +
+        document.documentElement.scrollTop;
+      destinationCardRight = this.cardRef2.getBoundingClientRect().right;
+      //find the next location of the current 'next card'
+      nextStartTop =
+        this.cardRef5.getBoundingClientRect().top +
+        document.documentElement.scrollTop;
+
+      nextStartRight = this.cardRef5.getBoundingClientRect().right;
+    }
+
+    // get the ref to the selected card during this turn
+    let ref;
+    switch (cardRef) {
+      case 0:
+        ref = this.cardRef0;
+        break;
+      case 1:
+        ref = this.cardRef1;
+        break;
+      case 3:
+        ref = this.cardRef3;
+        break;
+      case 4:
+        ref = this.cardRef4;
+        break;
+    }
+
+    // return this.sendMove(prevState, newPlayer);
+    // Calculate the starting position of the currently selected card
+    const startingCardTop =
+      ref.getBoundingClientRect().top +
+      document.documentElement.scrollTop -
+      destinationCardTop;
+
+    const startingCardRight =
+      ref.getBoundingClientRect().right - destinationCardRight;
+    //set the transition state so the currenlty selected card knows it's location and
+    //set the animation flag to false so the moving cards stay put until they are forced
+    // to thier new position in compnent did update
+    prevState.transition.startAnim = false;
+    prevState.transition.playerCard.startTop = startingCardTop;
+    prevState.transition.playerCard.startRight = startingCardRight;
+    prevState.transition.playerCard.card = prevState.selectedCard;
+
+    prevState.transition.nextCard.startTop =
+      nextStartTop -
+      ref.getBoundingClientRect().top -
+      document.documentElement.scrollTop;
+
+    prevState.transition.nextCard.startRight =
+      nextStartRight - ref.getBoundingClientRect().right;
+
+    //adjust adnamtions for inverted board on redplayer side
+    if (this.props.userColor === "Red") {
+      prevState.transition.playerCard.startTop *= -1;
+      prevState.transition.playerCard.startRight *= -1;
+      prevState.transition.nextCard.startTop *= -1;
+      prevState.transition.nextCard.startRight *= -1;
+    }
+    return prevState;
+  };
+
   //update board after a move is made on the backend
   sendMove({ prevState, newPlayer }) {
+    prevState = this.animateCard(prevState);
     reactLocalStorage.setObject("state", prevState);
     reactLocalStorage.setObject("newPlayer", newPlayer);
+
+    this.props.setLogo(newPlayer);
     this.setState({
       board: [...prevState.board],
       currentPlayer: newPlayer,
@@ -395,8 +426,7 @@ class Game extends Component {
   };
 
   //send New Deck of cards to the back end
-  sendNewDeck = (cards) => {
-    let firstPlayer = Math.random() > 0.5 ? "red" : "blue";
+  sendNewDeck = (cards, firstPlayer) => {
     console.log("I'm updating the back end with the new deck of cards");
     this.match_channel.sendShuffle({
       cards: cards,
@@ -405,7 +435,12 @@ class Game extends Component {
   };
   // add the new deck of cards into state
   updateCardsState = (data) => {
-    // console.log(data['cards'])
+    this.props.setLogo(data["currentPlayer"]);
+    reactLocalStorage.setObject("state", {
+      ...this.state,
+      cards: data["cards"],
+    });
+    reactLocalStorage.setObject("newPlayer", data["currentPlayer"]);
     this.setState({
       ...this.state,
       cards: data["cards"],
@@ -414,16 +449,30 @@ class Game extends Component {
   };
 
   makeRandomDeck = () => {
+    let firstPlayer = Math.random() > 0.5 ? "red" : "blue";
     const shuffled = CARDS.sort(() => 0.5 - Math.random());
     // Get sub-array of first n elements after shuffled
     let cards = shuffled.slice(0, 5).map((card, i) => {
-      card.location = i;
+      if (firstPlayer === "red" && i === 2) {
+        card.location = 5;
+      } else {
+        card.location = i;
+      }
       return card;
     });
-    this.sendNewDeck(cards);
+    this.sendNewDeck(cards, firstPlayer);
   };
 
   componentDidUpdate(prevProps, _) {
+    if (this.props.forfeit) {
+      //get id of non-forfeiting player
+      const winnerId =
+        this.props.game.red_user_id === this.props.user.id
+          ? this.props.game.blue_user_id
+          : this.props.game.red_user_id;
+      this.match_channel.wonGame({ id: winnerId });
+    }
+
     //if the animation flag is false we reset it so cards will be animated to tbie rnew positions
     if (!this.state.transition.startAnim) {
       // update after a short delay so cards have a new position which will trigger the animation
@@ -438,21 +487,7 @@ class Game extends Component {
     }
 
     if (prevProps !== this.props) {
-      // console.log('prop update')
-
-      if (this.props.userColor === "Red" && this.state.cards.length === 0) {
-        console.log("shuffling");
-        const shuffled = CARDS.sort(() => 0.5 - Math.random());
-        // Get sub-array of first n elements after shuffled
-        let cards = shuffled.slice(0, 5).map((card, i) => {
-          card.location = i;
-          return card;
-        });
-        this.sendNewDeck(cards);
-        // setTimeout(() => this.sendNewDeck(cards), 2000);
-      } else {
-        this.match_channel.perform("getLastMove");
-      }
+      this.match_channel.perform("getLastMove");
     }
   }
 

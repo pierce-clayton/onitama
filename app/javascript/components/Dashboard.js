@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import EditPlayer from "./EditPlayer";
 import Waiting from "./Waiting";
 
 const Dashboard = (props) => {
   const [showEdit, setShowEdit] = useState(false);
   const [readyToPlay, setReadyToPlay] = useState(false);
+  const [stats, setStats] = useState({});
 
   const btnText = showEdit ? "Show Profile" : "Edit Profile";
   const handlesCompletion = () => {
@@ -17,10 +19,25 @@ const Dashboard = (props) => {
     setReadyToPlay(true);
   };
 
+  // get users stats from the back end
+  const getStats = async () => {
+    console.log();
+    const { user } = props;
+    try {
+      const response = await axios.get(`/users/${user.id}/stats`);
+      if (response.status === 200) {
+        setStats(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     if (props.game.id && readyToPlay) {
       props.history.push("/onitama");
     }
+    if (props.user?.id && !stats.blue_games) getStats();
   });
 
   return (
@@ -28,7 +45,45 @@ const Dashboard = (props) => {
       <div className="columns">
         <div className="row">
           <div className="col-sm" style={{ width: 500 }}>
-            <p className="title is-4">Welcome, {props.user.user_name}</p>
+            <p className="welcome title is-4">
+              Welcome, {props.user.user_name}
+            </p>
+            <div className="box">
+              <div className="list">
+                <ul>
+                  <div className="list-item">
+                    <li>
+                      {" "}
+                      You are ranked {stats.rank} out of {stats.users}
+                    </li>
+                  </div>
+                  <div className="list-item">
+                    <li>
+                      {" "}
+                      You have played {stats.blue_games + stats.red_games} games
+                    </li>
+                  </div>
+                  <div className="list-item">
+                    <li>
+                      {" "}
+                      You have won {stats.blue_wins + stats.red_wins} games
+                    </li>
+                  </div>
+                  <div className="list-item">
+                    <li className="blue">
+                      {" "}
+                      Victories playing as blue: {stats.blue_wins}
+                    </li>
+                  </div>
+                  <div className="list-item">
+                    <li className="red">
+                      {" "}
+                      Victories playing as red: {stats.red_wins}
+                    </li>
+                  </div>
+                </ul>
+              </div>
+            </div>
             {showEdit ? (
               <EditPlayer
                 onComplete={handlesCompletion}

@@ -1,24 +1,14 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: %i[show edit update destroy]
+  before_action :set_user, only: %i[show edit update destroy stats]
 
-  # GET /users
-  # GET /users.json
   def index
     @users = User.all
   end
 
-  # GET /users/1
-  # GET /users/1.json
-  # def show
-  #   render json: @user
-  # end
-
-  # GET /users/new
   def new
     @user = User.new
   end
 
-  # GET /users/1/edit
   def edit
     render json: @user, except: %i[password_digest created_at updated_at]
   end
@@ -59,8 +49,6 @@ class UsersController < ApplicationController
     # end
   end
 
-  # DELETE /users/1
-  # DELETE /users/1.json
   def destroy
     @user.destroy
     render json: @user
@@ -69,6 +57,38 @@ class UsersController < ApplicationController
     #   format.html { redirect_to users_url, notice: "User was successfully destroyed." }
     #   format.json { head :no_content }
     # end
+  end
+
+  def stats
+    puts "<>" * 30
+    puts @user
+    rank = 0
+    ranks = User.all.map do |user|
+      if user.games.length == 0
+        0
+      else
+        (Game.where(winning_user_id: user.id).length).to_f / (user.games.length).to_f
+      end
+    end
+
+    ranks = ranks.sort.reverse
+    puts "<>" * 30
+    puts ranks
+
+    if @user.games.length == 0
+      user_rank = 0
+    else
+      user_rank = (Game.where(winning_user_id: @user.id).length).to_f / (@user.games.length).to_f
+    end
+    puts "user Rank #{user_rank}"
+    rank = ranks.index { |i| i == user_rank } + 1
+    blue_games = Game.where(blue_user_id: @user.id).length
+    red_games = Game.where(red_user_id: @user.id).length
+    blue_wins = Game.where(blue_user_id: @user.id, winning_user_id: @user.id).length
+    red_wins = Game.where(red_user_id: @user.id, winning_user_id: @user.id).length
+    users = User.all.length
+
+    render json: { blue_games: blue_games, red_games: red_games, blue_wins: blue_wins, red_wins: red_wins, rank: rank, users: users }
   end
 
   private

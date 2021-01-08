@@ -13,7 +13,6 @@
  *= require_tree .
  *= require_self
  */
-
 html {
   height: 100vh;
   background-image: url(out-bw-fade.png);
@@ -35,7 +34,7 @@ html {
   position: fixed;
 }
 .or {
-  padding: 35px;
+  padding: 15px;
 }
 
 .tile.is-ancestor:nth-child(2n + 1) > .tile > .tile.invalid:nth-child(2n),
@@ -49,7 +48,8 @@ html {
 
 .game-card {
   transition: transform 0s;
-  width: 7rem;
+  min-width: 7rem;
+  width: 75%;
   border-radius: 6px;
 }
 
@@ -133,4 +133,24 @@ figure.image.board-square.is-square {
   display: block;
   margin-left: auto;
   margin-right: auto;
+}
+
+.navbar {
+  background-color: rgba(0, 0, 0, 0.0);
+}
+
+.welcome {
+  padding: 2%;
+}
+
+li {
+  font-size: large;
+  font-weight: 700;
+  padding: 1%
+}
+.blue {
+  color: blue
+}
+.red {
+  color: red;
 }

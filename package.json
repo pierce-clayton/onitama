@@ -9,6 +9,7 @@
     "@rails/webpacker": "4.3.0",
     "axios": "^0.21.1",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
+    "bulma-block-list": "^0.4.1",
     "prop-types": "^15.7.2",
     "react": "^17.0.1",
     "react-actioncable-provider": "^2.0.0",
