@@ -48,7 +48,8 @@ html {
 
 .game-card {
   transition: transform 0s;
-  width: 7rem;
+  min-width: 7rem;
+  width: 75%;
   border-radius: 6px;
 }
 
