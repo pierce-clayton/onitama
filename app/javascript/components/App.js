@@ -62,6 +62,7 @@ export default class App extends Component {
 
   //handle a palyer foritting the game
   forfeit = () => {
+    this.setLogo(null);
     this.handleGameWon();
   };
 

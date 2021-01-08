@@ -62,8 +62,8 @@ class Game extends Component {
             this.updateCardsState(data.shuffle);
           }
           if (data.winner) {
-            this.props.history.push('/dashboard')
-            reactLocalStorage.clear()
+            this.props.history.push("/dashboard");
+            reactLocalStorage.clear();
           }
         },
         sendSelectedCard: (card) => {
@@ -80,13 +80,14 @@ class Game extends Component {
         },
         wonGame: (user) => {
           this.match_channel.perform("wonGame", user);
-        }
+        },
       }
     );
   }
   componentDidMount = () => {
     const pS = reactLocalStorage.getObject("state");
     const nP = reactLocalStorage.getObject("newPlayer");
+    this.props.setLogo(nP);
     if (!!pS) {
       this.setState({
         ...pS,
@@ -97,10 +98,10 @@ class Game extends Component {
       });
     }
   };
-  componentWillUnmount = () => {
-    this.channel.unsubscribe()
-    this.match_channel.unsubscribe();
-  }
+  // componentWillUnmount = () => {
+  //   this.channel.unsubscribe();
+  //   this.match_channel.unsubscribe();
+  // };
   // define blue side as default down and left most card of blue team being location 0 increasing counter clockwise
   // with the exception that the cards on the top being reversed:
   //          3    4
@@ -251,7 +252,7 @@ class Game extends Component {
         let nextStartRight;
         // check if move will wnd the game
         if (this.isGameOver(prevState, move)) {
-          this.match_channel.wonGame({ id: this.props.user.id })
+          this.match_channel.wonGame({ id: this.props.user.id });
           window.alert(`${prevState.currentPlayer} Wins!`);
         }
         // move selected piece to new square and empty out current square
@@ -266,6 +267,7 @@ class Game extends Component {
         let currentCardLoc = +prevState.selectedCard.location;
         // keep a reference to this location for use with animations
         let cardRef = currentCardLoc;
+
         if (prevState.currentPlayer === "blue") {
           newPlayer = "red";
           prevState.transition.nextCard.card = this.findCardByLoc(2);
@@ -406,9 +408,7 @@ class Game extends Component {
   };
 
   //send New Deck of cards to the back end
-  sendNewDeck = (cards) => {
-    let firstPlayer = Math.random() > 0.5 ? "red" : "blue";
-
+  sendNewDeck = (cards, firstPlayer) => {
     console.log("I'm updating the back end with the new deck of cards");
     this.match_channel.sendShuffle({
       cards: cards,
@@ -418,6 +418,11 @@ class Game extends Component {
   // add the new deck of cards into state
   updateCardsState = (data) => {
     this.props.setLogo(data["currentPlayer"]);
+    reactLocalStorage.setObject("state", {
+      ...this.state,
+      cards: data["cards"],
+    });
+    reactLocalStorage.setObject("newPlayer", data["currentPlayer"]);
     this.setState({
       ...this.state,
       cards: data["cards"],
@@ -426,13 +431,18 @@ class Game extends Component {
   };
 
   makeRandomDeck = () => {
+    let firstPlayer = Math.random() > 0.5 ? "red" : "blue";
     const shuffled = CARDS.sort(() => 0.5 - Math.random());
     // Get sub-array of first n elements after shuffled
     let cards = shuffled.slice(0, 5).map((card, i) => {
-      card.location = i;
+      if (firstPlayer === "red" && i === 2) {
+        card.location = 5;
+      } else {
+        card.location = i;
+      }
       return card;
     });
-    this.sendNewDeck(cards);
+    this.sendNewDeck(cards, firstPlayer);
   };
 
   componentDidUpdate(prevProps, _) {
@@ -452,19 +462,19 @@ class Game extends Component {
     if (prevProps !== this.props) {
       // console.log('prop update')
 
-      if (this.props.userColor === "Red" && this.state.cards.length === 0) {
-        console.log("shuffling");
-        const shuffled = CARDS.sort(() => 0.5 - Math.random());
-        // Get sub-array of first n elements after shuffled
-        let cards = shuffled.slice(0, 5).map((card, i) => {
-          card.location = i;
-          return card;
-        });
-        this.sendNewDeck(cards);
-        // setTimeout(() => this.sendNewDeck(cards), 2000);
-      } else {
-        this.match_channel.perform("getLastMove");
-      }
+      // if (this.props.userColor === "Red" && this.state.cards.length === 0) {
+      //   console.log("shuffling");
+      //   const shuffled = CARDS.sort(() => 0.5 - Math.random());
+      //   // Get sub-array of first n elements after shuffled
+      //   let cards = shuffled.slice(0, 5).map((card, i) => {
+      //     card.location = i;
+      //     return card;
+      //   });
+      // this.sendNewDeck(cards);
+      //   // setTimeout(() => this.sendNewDeck(cards), 2000);
+      // } else {
+      this.match_channel.perform("getLastMove");
+      //}
     }
   }
 
