@@ -115,3 +115,22 @@ figure.image.board-square.is-square {
   transition: transform 1.5s;
   transform: translateY(0) !important;
 }
+
+/* editing for 404 page */
+.error-title {
+  font-size: 60px;
+  text-align: center;
+}
+#samurai {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+#go-home-btn {
+  margin-top: 5em;
+  color: black;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
