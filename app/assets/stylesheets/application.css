@@ -13,7 +13,6 @@
  *= require_tree .
  *= require_self
  */
-
 html {
   height: 100vh;
   background-image: url(out-bw-fade.png);
@@ -120,5 +119,17 @@ figure.image.board-square.is-square {
 }
 
 .welcome {
-  padding: 25px
+  padding: 2%;
+}
+
+li {
+  font-size: large;
+  font-weight: 700;
+  padding: 1%
+}
+.blue {
+  color: blue
+}
+.red {
+  color: red;
 }

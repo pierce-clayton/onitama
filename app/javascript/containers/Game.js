@@ -79,6 +79,7 @@ class Game extends Component {
           this.match_channel.perform("sendShuffle", cards);
         },
         wonGame: (user) => {
+          this.props.handleGameWon();
           this.match_channel.perform("wonGame", user);
         },
       }
@@ -246,7 +247,7 @@ class Game extends Component {
     this.state.validMoves.forEach((move) => {
       //only allow move if it is a valid move
       if (move[0] === +col && move[1] === +row) {
-        //return this.setState((prevState) => {
+        //deeply clone state
         let prevState = JSON.parse(JSON.stringify(this.state));
         let destinationCardTop;
         let destinationCardRight;
@@ -448,6 +449,15 @@ class Game extends Component {
   };
 
   componentDidUpdate(prevProps, _) {
+    if (this.props.forfeit) {
+      console.log("FORFEIT");
+      const winnerId =
+        this.props.game.red_user_id === this.props.user.id
+          ? this.props.game.red_user_id
+          : this.props.game.blue_user_id;
+      this.match_channel.wonGame({ id: winnerId });
+    }
+
     //if the animation flag is false we reset it so cards will be animated to tbie rnew positions
     if (!this.state.transition.startAnim) {
       // update after a short delay so cards have a new position which will trigger the animation
@@ -462,21 +472,7 @@ class Game extends Component {
     }
 
     if (prevProps !== this.props) {
-      // console.log('prop update')
-
-      // if (this.props.userColor === "Red" && this.state.cards.length === 0) {
-      //   console.log("shuffling");
-      //   const shuffled = CARDS.sort(() => 0.5 - Math.random());
-      //   // Get sub-array of first n elements after shuffled
-      //   let cards = shuffled.slice(0, 5).map((card, i) => {
-      //     card.location = i;
-      //     return card;
-      //   });
-      // this.sendNewDeck(cards);
-      //   // setTimeout(() => this.sendNewDeck(cards), 2000);
-      // } else {
       this.match_channel.perform("getLastMove");
-      //}
     }
   }
 

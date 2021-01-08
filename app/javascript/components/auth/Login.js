@@ -35,6 +35,7 @@ export default class Login extends Component {
         }
         if (res.data.status === "created") {
           this.props.handleSuccessfulAuth(res.data);
+          this.props.history.push("/dashboard");
         }
       })
       .catch((err) => console.log(err));
@@ -46,10 +47,10 @@ export default class Login extends Component {
     });
   };
 
-  componentDidUpdate() {
-    if (this.props.loggedIn === "LOGGED_IN")
-      this.props.history.push("/dashboard");
-  }
+  // componentDidUpdate() {
+  //   if (this.props.loggedIn === "LOGGED_IN")
+  //     this.props.history.push("/dashboard");
+  // }
 
   render() {
     return (

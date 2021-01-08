@@ -19,6 +19,7 @@ export default class App extends Component {
       loggedIn: "NOT_LOGGED_IN",
       showNav: false,
       logo: Logo,
+      forfeit: false,
     };
   }
 
@@ -52,18 +53,20 @@ export default class App extends Component {
     // this.channel.unsubscribe()
   };
 
-  handleGameWon = (game) => {
+  handleGameWon = (winner) => {
     console.log("game over");
-    this.setState((_) => ({
+    this.setState({
+      ...this.state,
       game: {},
-    }));
+      forfeit: false,
+    });
     reactLocalStorage.clear();
   };
 
   //handle a palyer foritting the game
   forfeit = () => {
-    this.showNav();
-    this.handleGameWon();
+    // this.handleGameWon();
+    this.setState({ ...this.state, forfeit: true, showNav: false });
   };
 
   checkLoginStatus = () => {
@@ -118,9 +121,11 @@ export default class App extends Component {
   };
 
   showNav = () => {
+    const nav = this.state.showNav;
+    console.log("NNNAAAAAAAV", !nav);
     this.setState({
       ...this.state,
-      showNav: !this.state.showNav,
+      showNav: !nav,
     });
   };
 
@@ -187,14 +192,14 @@ export default class App extends Component {
               </Link>
 
               {this.state.game.id ? (
-                <Link
-                  to="/dashboard"
+                <a
+                  // to="/dashboard"
                   className="navbar-item"
                   onClick={this.forfeit}
                 >
                   {" "}
                   Forfeit Game{" "}
-                </Link>
+                </a>
               ) : null}
             </div>
           </div>
@@ -241,6 +246,8 @@ export default class App extends Component {
                 user={this.state.user}
                 userColor={this.whatColor()}
                 setLogo={this.setLogo}
+                forfeit={this.state.forfeit}
+                handleGameWon={this.handleGameWon}
               />
             )}
           />
