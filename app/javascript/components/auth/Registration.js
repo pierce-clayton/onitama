@@ -18,7 +18,7 @@ export default class Registration extends Component {
     if (this.state.password !== this.state.password_confirmation) {
       this.setState({
         ...this.state,
-        errorMessage: "Passwords don't match.",
+        errorMessage: { password: "Passwords don't match" },
       });
     } else {
       axios
@@ -39,7 +39,13 @@ export default class Registration extends Component {
             this.props.history.push("/dashboard");
           }
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          this.setState({
+            ...this.state,
+            errorMessage: { username: "Usename is already taken" },
+          });
+          console.log(err);
+        });
     }
   };
 
@@ -66,9 +72,13 @@ export default class Registration extends Component {
           <form onSubmit={this.handleSubmit}>
             <h2 className="title is-4">New Account</h2>
             <div className="field ">
-              <div className="control">
+              <div className="control has-icons-right">
                 <input
-                  className="is-centered input"
+                  className={
+                    this.state.errorMessage.username
+                      ? "is-centered input is-danger"
+                      : "is-centered input"
+                  }
                   type="text"
                   placeholder="Username"
                   name="user_name"
@@ -76,13 +86,28 @@ export default class Registration extends Component {
                   onChange={this.handleChange}
                   required
                 />
+                {this.state.errorMessage.username ? (
+                  <span className="icon is-small is-right">
+                    <i className="fas fa-exclamation-triangle"></i>
+                  </span>
+                ) : null}
+                {this.state.errorMessage.username ? (
+                  <strong>
+                    {" "}
+                    <p className="help is-danger">
+                      {this.state.errorMessage.username}
+                    </p>
+                  </strong>
+                ) : null}
               </div>
             </div>
             <div className="field">
               <div className="control has-icons-right">
                 <input
                   className={
-                    this.state.errorMessage.length ? "input is-danger" : "input"
+                    this.state.errorMessage.password
+                      ? "input is-danger"
+                      : "input"
                   }
                   type="password"
                   placeholder="Password"
@@ -91,7 +116,7 @@ export default class Registration extends Component {
                   onChange={this.handleChange}
                   required
                 ></input>
-                {this.state.errorMessage.length ? (
+                {this.state.errorMessage.password ? (
                   <span className="icon is-small is-right">
                     <i className="fas fa-exclamation-triangle"></i>
                   </span>
@@ -102,7 +127,9 @@ export default class Registration extends Component {
               <div className="control has-icons-right">
                 <input
                   className={
-                    this.state.errorMessage.length ? "input is-danger" : "input"
+                    this.state.errorMessage.password
+                      ? "input is-danger"
+                      : "input"
                   }
                   type="password"
                   placeholder="Confirm Password"
@@ -111,12 +138,18 @@ export default class Registration extends Component {
                   onChange={this.handleChange}
                   required
                 ></input>
-                {this.state.errorMessage.length ? (
+                {this.state.errorMessage.password ? (
                   <span className="icon is-small is-right">
                     <i className="fas fa-exclamation-triangle"></i>
                   </span>
                 ) : null}
-                <p className="help is-danger">{this.state.errorMessage}</p>
+                {this.state.errorMessage.password ? (
+                  <strong>
+                    <p className="help is-danger">
+                      {this.state.errorMessage.password}
+                    </p>
+                  </strong>
+                ) : null}
               </div>
             </div>
             <div className="field">

@@ -102,7 +102,6 @@ class Game extends Component {
     }
   };
   componentWillUnmount = () => {
-    // this.channel.unsubscribe();
     this.props.setLogo(null);
     this.match_channel.unsubscribe();
   };
