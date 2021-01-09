@@ -12,7 +12,7 @@ Onitama is built with a Rails back-end using Action Cable and a React front end 
 
 ## Setting up Onitama locally
 
-First fork and clone this repo. Install the `gem-file` and `package.json` by running `bundle install` and `yarn`. Then start a Redis server `brew services start redis` (if you need to install Redis check [here](https://tableplus.com/blog/2018/10/how-to-start-stop-restart-redis.html)
+First fork and clone this repo. Install the `gem-file` and `package.json` by running `bundle install` and `yarn`. Then start a Redis server `brew services start redis` (if you need to install Redis check [here](https://tableplus.com/blog/2018/10/how-to-start-stop-restart-redis.html))
 
 ## Initializing the database
 
