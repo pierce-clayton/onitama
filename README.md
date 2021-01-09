@@ -1,24 +1,29 @@
-# README
+# Onitama
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Onitama is a game app based on the [board game of the name](https://www.arcanewonders.com/resources/Onitama_Rulebook.PDF). This app was built soley for educational purposes and is not intended for comercial distribution.  
 
-Things you may want to cover:
+Onitama is built with a Rails back-end using Action Cable and a React front end using Webpack. 
 
-* Ruby version
+## Requirements
+* Ruby 2.6.1
+* Rails 6.0.3
+* React 17.0.1
+* postgres 13.1
 
-* System dependencies
+## Setting up Onitama locally
 
-* Configuration
+First fork and clone this repo. Install the `gem-file` and `package.json` by running `bundle install` and `yarn`. Then start a Redis server `brew services start redis` (if you need to install Redis check [here](https://tableplus.com/blog/2018/10/how-to-start-stop-restart-redis.html)
 
-* Database creation
+## Initializing the database
 
-* Database initialization
+Within the project directory run `rails db:create` and `rails db: migrate`
 
-* How to run the test suite
+## Launching the server
 
-* Services (job queues, cache servers, search engines, etc.)
+To launch the server simply run `rails s`. This will launch the game on `http://localhost:300`. Navigate there to play. Note: because Onitama uses action action cable and is played on two idfferent browser windows, if you wish to play on one computer where the game is served locally you will may need to open one of the windows in incognito mode. 
 
-* Deployment instructions
+## Example of app usage and game play
 
-* ...
+## Created By
+
+[Will Lytle](https://github.com/wlytle),  [Clay Pierce](https://github.com/technicholy), and [Amanda Reis](https://github.com/mandareis)
