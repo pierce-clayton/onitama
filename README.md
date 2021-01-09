@@ -29,3 +29,4 @@ To launch the server simply run `rails s`. This will launch the game on `http://
 ![Onitama Game Play](demo/gameplay.gif)
 ## Created By
 
+[Will Lytle](https://github.com/wlytle),  [Clay Pierce](https://github.com/technicholy), and [Amanda Reis](https://github.com/mandareis)
