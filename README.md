@@ -1,6 +1,6 @@
 # Onitama
 
-Onitama is a game app based on the [board game of the name](https://www.arcanewonders.com/resources/Onitama_Rulebook.PDF). This app was built soley for educational purposes and is not intended for comercial distribution.  
+Onitama is a game app based on the [board game of the ame name](https://www.arcanewonders.com/resources/Onitama_Rulebook.PDF). This app was built soley for educational purposes and is not intended for comercial distribution.  
 
 Onitama is built with a Rails back-end using Action Cable and a React front end using Webpack. 
 
@@ -23,7 +23,10 @@ Within the project directory run `rails db:create` and `rails db: migrate`
 To launch the server simply run `rails s`. This will launch the game on `http://localhost:300`. Navigate there to play. Note: because Onitama uses action action cable and is played on two idfferent browser windows, if you wish to play on one computer where the game is served locally you will may need to open one of the windows in incognito mode. 
 
 ## Example of app usage and game play
+![Onitma login process](demo/login.gif)
 
+
+![Onitama Game Play](demo/gameplay.gif)
 ## Created By
 
 [Will Lytle](https://github.com/wlytle),  [Clay Pierce](https://github.com/technicholy), and [Amanda Reis](https://github.com/mandareis)
