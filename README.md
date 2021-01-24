@@ -1,6 +1,6 @@
 # Onitama
 
-Onitama is a game app based on the [board game of the ame name](https://www.arcanewonders.com/resources/Onitama_Rulebook.PDF). This app was built soley for educational purposes and is not intended for comercial distribution.  
+Onitama is a game app based on the [board game of the same name](https://www.arcanewonders.com/resources/Onitama_Rulebook.PDF). This app was built soley for educational purposes and is not intended for comercial distribution.  
 
 Onitama is built with a Rails back-end using Action Cable and a React front end using Webpack. 
 
