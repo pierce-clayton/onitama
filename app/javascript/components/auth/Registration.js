@@ -23,7 +23,7 @@ export default class Registration extends Component {
     } else {
       axios
         .post(
-          "http://localhost:3000/registrations",
+          "https://onitama.claytonpierce.dev/registrations",
           {
             user: {
               user_name: this.state.user_name,

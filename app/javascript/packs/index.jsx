@@ -10,7 +10,7 @@ import actioncable from 'actioncable'
 
 const CableApp = {}
 
-CableApp.cable = actioncable.createConsumer('ws://localhost:3000/cable')
+CableApp.cable = actioncable.createConsumer('ws://onitama.claytonpierce.dev/cable')
 
 document.addEventListener('DOMContentLoaded', () => {
   ReactDOM.render(
