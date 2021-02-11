@@ -9,5 +9,5 @@ Rails.application.routes.draw do
   match "*path", to: "pages#index", via: :all
   get "/404", to: "pages#not_found"
   # for /404 error page ^
-  # mount ActionCable.server => '/cable'
+  mount ActionCable.server => '/cable'
 end
