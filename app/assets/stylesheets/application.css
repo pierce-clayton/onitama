@@ -13,144 +13,164 @@
  *= require_tree .
  *= require_self
  */
+
 html {
-  height: 100vh;
-  background-image: url(out-bw-fade.png);
-  background-repeat: no-repeat;
-  background-size: 100%;
-  background-position: left bottom;
-  background-color: rgba(0, 0, 0, 0.06);
-  background-attachment: fixed;
+    height: 100vh;
+    background-image: url(images/out-bw-fade.png);
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-position: left bottom;
+    background-color: rgba(0, 0, 0, 0.06);
+    background-attachment: fixed;
 }
+
 .image.logo {
-  margin: 0 auto;
-  width: 30rem;
+    margin: 0 auto;
+    width: 30rem;
 }
 
 .foot {
-  left: 0;
-  bottom: 0;
-  text-align: center;
-  position: fixed;
-}
-.or {
-  padding: 15px;
+    left: 0;
+    bottom: 0;
+    text-align: center;
+    position: fixed;
 }
 
-.tile.is-ancestor:nth-child(2n + 1) > .tile > .tile.invalid:nth-child(2n),
-.tile.is-ancestor:nth-child(2n) > .tile > .tile.invalid:nth-child(2n + 1) {
-  background-color: rgba(141, 168, 155, 0.7);
+.or {
+    padding: 15px;
+}
+
+.tile.is-ancestor:nth-child(2n + 1)>.tile>.tile.invalid:nth-child(2n),
+.tile.is-ancestor:nth-child(2n)>.tile>.tile.invalid:nth-child(2n + 1) {
+    background-color: rgba(141, 168, 155, 0.7);
 }
 
 .column.board {
-  border: 2px inset rgb(43, 42, 42);
+    border: 2px inset rgb(43, 42, 42);
 }
 
 .game-card {
-  transition: transform 0s;
-  min-width: 7rem;
-  width: 75%;
-  border-radius: 6px;
+    transition: transform 0s;
+    min-width: 7rem;
+    width: 75%;
+    border-radius: 6px;
 }
 
 .game-card.selected {
-  box-shadow: 10px 5px 5px rgba(155, 141, 168, 1);
+    box-shadow: 10px 5px 5px rgba(155, 141, 168, 1);
 }
 
 .card-image {
-  border-radius: 7px;
+    border-radius: 7px;
 }
 
 .flip-vertical {
-  transform: rotate(0.5turn);
+    transform: rotate(0.5turn);
 }
 
 .unflip-vertical {
-  transform: rotate(0.5turn);
+    transform: rotate(0.5turn);
 }
 
 .tile.valid {
-  background-color: rgba(155, 141, 168, 0.8);
-}
-/* set game piece size */
-figure.image.board-square.is-square {
-  width: 65%;
-}
-/* center game piece in board square */
-.is-horizontal-center {
-  justify-content: center;
+    background-color: rgba(155, 141, 168, 0.8);
 }
 
+
+/* set game piece size */
+
+figure.image.board-square.is-square {
+    width: 65%;
+}
+
+
+/* center game piece in board square */
+
+.is-horizontal-center {
+    justify-content: center;
+}
+
+
 /* Coerce a card into it's final position */
+
 .player-force-move-x {
-  transition: transform 1s;
-  transform: translate(0) !important;
+    transition: transform 1s;
+    transform: translate(0) !important;
 }
 
 .player-force-move-r {
-  transition: transform 0.5s;
-  transition-delay: 1s;
-  transform: rotate(0.5turn) !important;
+    transition: transform 0.5s;
+    transition-delay: 1s;
+    transform: rotate(0.5turn) !important;
 }
+
+
 /* need a sepete rotation class for the opponents new 'next card' because it is alreadt flipped when it starts */
+
 .top-player-force-anim {
-  transition: transform 0.5s;
-  transition-delay: 1s;
-  transform: rotate(0turn) !important;
+    transition: transform 0.5s;
+    transition-delay: 1s;
+    transform: rotate(0turn) !important;
 }
 
 .player-force-move-y {
-  transition: transform 1.5s;
-  transition-delay: 1.5s;
-  transform: translateY(0) !important;
+    transition: transform 1.5s;
+    transition-delay: 1.5s;
+    transform: translateY(0) !important;
 }
 
 .next-force-move-x {
-  transition: transform 1s;
-  transition-delay: 1.5s;
-  transform: translate(0) !important;
+    transition: transform 1s;
+    transition-delay: 1.5s;
+    transform: translate(0) !important;
 }
 
 .next-force-move-y {
-  transition: transform 1.5s;
-  transform: translateY(0) !important;
+    transition: transform 1.5s;
+    transform: translateY(0) !important;
 }
 
+
 /* editing for 404 page */
+
 .error-title {
-  font-size: 60px;
-  text-align: center;
+    font-size: 60px;
+    text-align: center;
 }
+
 #samurai {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 50%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
 }
+
 #go-home-btn {
-  margin-top: 5em;
-  color: black;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
+    margin-top: 5em;
+    color: black;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .navbar {
-  background-color: rgba(0, 0, 0, 0.0);
+    background-color: rgba(0, 0, 0, 0.0);
 }
 
 .welcome {
-  padding: 2%;
+    padding: 2%;
 }
 
 li {
-  font-size: large;
-  font-weight: 700;
-  padding: 1%
+    font-size: large;
+    font-weight: 700;
+    padding: 1%
 }
+
 .blue {
-  color: blue
+    color: blue
 }
+
 .red {
-  color: red;
+    color: red;
 }
