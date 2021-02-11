@@ -8,5 +8,5 @@ test:
   channel_prefix: onitama_test
 production:
   adapter: redis
-  url: <%= ENV.fetch("REDIS_URL") { "redis://redistogo:65072d27628fb2810c5b52dd39028f55@hammerjaw.redistogo.com:11321" } %>
+  url: "redis://redistogo:65072d27628fb2810c5b52dd39028f55@hammerjaw.redistogo.com:11321"
   channel_prefix: onitama_production
