@@ -1,7 +1,11 @@
 class PagesController < ApplicationController
   
   def index
-    render file: '../assets/images.out-bw-fade.png'
+    respond_to do |format|
+      format.html { render 'pages/index'}
+      format.png { render file: '../assets/images/out-bw-fade.png' }
+    end
+    
   end
 
   def not_found
