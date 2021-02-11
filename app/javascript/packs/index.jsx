@@ -10,7 +10,7 @@ import actioncable from 'actioncable'
 
 const CableApp = {}
 
-CableApp.cable = actioncable.createConsumer('wss://onitama.claytonpierce.dev/cable')
+CableApp.cable = actioncable.createConsumer('wss://murmuring-beyond-38831.herokuapp.com/cable')
 
 document.addEventListener('DOMContentLoaded', () => {
   ReactDOM.render(

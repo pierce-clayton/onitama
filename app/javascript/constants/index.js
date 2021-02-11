@@ -1,5 +1,5 @@
 export const API_ROOT = "https://onitama.claytonpierce.dev";
-export const API_WS_ROOT = "wss://onitama.claytonpierce.dev/cable";
+export const API_WS_ROOT = "wss://murmuring-beyond-38831.herokuapp.com/cable";
 export const HEADERS = {
     "Content-Type": "application/json",
     Accept: "application/json",
