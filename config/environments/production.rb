@@ -40,8 +40,8 @@ Rails.application.configure do
 
   # Mount Action Cable outside main process or domain.
   config.action_cable.mount_path = nil
-  config.action_cable.url = 'wss://onitama.claytonpierce.dev/cable'
-  config.action_cable.allowed_request_origins = ['http://onitama.claytonpierce.dev', 'https://onitama.claytonpierce.dev']
+  config.action_cable.url = 'wss://murmuring-beyond-38831.herokuapp.com/cable'
+  config.action_cable.allowed_request_origins = ['http://onitama.claytonpierce.dev', 'https://onitama.claytonpierce.dev', 'http://murmuring-beyond-38831.herokuapp.com', 'https://murmuring-beyond-38831.herokuapp.com']
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   config.force_ssl = false
