@@ -1,4 +1,5 @@
 class PagesController < ApplicationController
+  Mime::Type.register "image/png", :png
   def index
   end
 
