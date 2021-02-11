@@ -16,7 +16,7 @@
 
 html {
     height: 100vh;
-    background-image: url(app/assets/images/out-bw-fade.png);
+    background-image: url(images/out-bw-fade.png);
     background-repeat: no-repeat;
     background-size: 100%;
     background-position: left bottom;
