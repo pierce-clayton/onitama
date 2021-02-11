@@ -1,6 +1,7 @@
 class PagesController < ApplicationController
-  Mime::Type.register "image/png", :png
+  
   def index
+    render file: '../assets/images.out-bw-fade.png'
   end
 
   def not_found
