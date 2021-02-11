@@ -11,7 +11,7 @@ class SessionsController < ApplicationController
       render json: {
         status: :created,
         logged_in: true,
-        user: user
+        user: user.to_json
       }, except: %i[password_digest created_at updated_at]
     else
       render json: { status: 401 }
@@ -21,7 +21,7 @@ class SessionsController < ApplicationController
     if @current_user
       render json: {
         logged_in: true,
-        user: @current_user
+        user: @current_user.to_json
       }, except: %i[password_digest created_at updated_at]
     else
       render json: {
