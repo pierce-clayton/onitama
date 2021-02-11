@@ -39,7 +39,7 @@ Rails.application.configure do
   config.active_storage.service = :local
 
   # Mount Action Cable outside main process or domain.
-  config.action_cable.mount_path = nil
+  config.action_cable.mount_path = '/cable'
   config.action_cable.url = 'wss://murmuring-beyond-38831.herokuapp.com/cable'
   config.action_cable.allowed_request_origins = ['http://onitama.claytonpierce.dev', 'https://onitama.claytonpierce.dev', 'http://murmuring-beyond-38831.herokuapp.com', 'https://murmuring-beyond-38831.herokuapp.com']
 
