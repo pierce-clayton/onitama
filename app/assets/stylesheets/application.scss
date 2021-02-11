@@ -16,7 +16,7 @@
 
 html {
     height: 100vh;
-    background-image: url(https://onitama.claytonpierce.dev/public/out-bw-fade.png);
+    background-image: image-url('../images/out-bw-fade.png');
     background-repeat: no-repeat;
     background-size: 100%;
     background-position: left bottom;
@@ -40,8 +40,8 @@ html {
     padding: 15px;
 }
 
-.tile.is-ancestor:nth-child(2n + 1)>.tile>.tile.invalid:nth-child(2n),
-.tile.is-ancestor:nth-child(2n)>.tile>.tile.invalid:nth-child(2n + 1) {
+.tile.is-ancestor:nth-child(2n+1)>.tile>.tile.invalid:nth-child(2n),
+.tile.is-ancestor:nth-child(2n)>.tile>.tile.invalid:nth-child(2n+1) {
     background-color: rgba(141, 168, 155, 0.7);
 }
 
