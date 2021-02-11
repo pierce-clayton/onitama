@@ -1,5 +1,5 @@
 export const API_ROOT = "https://onitama.claytonpierce.dev";
-export const API_WS_ROOT = "ws://onitama.claytonpierce.dev/cable";
+export const API_WS_ROOT = "wss://onitama.claytonpierce.dev/cable";
 export const HEADERS = {
     "Content-Type": "application/json",
     Accept: "application/json",
