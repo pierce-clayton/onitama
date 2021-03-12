@@ -20,11 +20,11 @@ const Dashboard = (props) => {
   };
 
   // get users stats from the back end
-  const getStats = async () => {
+  const getStats = () => {
     console.log();
     const { user } = props;
     try {
-      const response = await axios.get(`/users/${user.id}/stats`);
+      const response = axios.get(`/users/${user.id}/stats`);
       if (response.status === 200) {
         setStats(response.data);
       }
