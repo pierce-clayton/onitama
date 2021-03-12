@@ -9,7 +9,7 @@ class User < ApplicationRecord
   
 
   def to_s
-    `{id: #{id}, name: #{user_name}}`
+    `{id: #{self.id}, name: #{self.user_name}}`
   end
 
   def games
