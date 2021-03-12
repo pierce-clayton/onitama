@@ -77,7 +77,7 @@ export default class App extends Component {
         if (res.data.logged_in) {
           this.setState({
             loggedIn: "LOGGED_IN",
-            user: res.data.user,
+            user: res.data,
           });
         } else if (!res.data.logged_in && this.state.loggedIn) {
           this.setState({
