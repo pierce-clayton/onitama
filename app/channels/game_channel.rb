@@ -27,7 +27,7 @@ class GameChannel < ApplicationCable::Channel
 
   def start(player1, player2)
     game = Game.create!(red_user: player1, blue_user: player2, state: "start", winning_user_id: nil)
-    ActionCable.server.broadcast "GameChannel", game: game
+    ActionCable.server.broadcast "GameChannel", { game: game }
   end
 
   def unsubscribed

@@ -6,7 +6,7 @@ class RegistrationsController < ApplicationController
       session[:user_id] = user.id
       render json: {
         status: :created,
-        user: user
+        user: { id: user.id, user_name: user.user_name }
       }, except: %i[password_digest created_at updated_at]
     else
       render json: { status: 422 }
