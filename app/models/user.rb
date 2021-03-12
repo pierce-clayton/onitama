@@ -8,6 +8,10 @@ class User < ApplicationRecord
   has_many :won_games, class_name: 'Game', foreign_key: 'winning_user'
   
 
+  def to_s
+    {id: self.id, name: self.name}
+  end
+
   def games
     [blue_games.to_a, red_games.to_a].flatten.sort
   end
