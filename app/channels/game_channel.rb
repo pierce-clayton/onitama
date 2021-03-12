@@ -10,7 +10,7 @@ class GameChannel < ApplicationCable::Channel
 
   def joined_game(user)
     # need to handle when players have an active game
-    @user = User.find(user["id"])
+    @user = User.find(user['user_name'])
     # last_game = @user.games.last
     # if last_game && last_game.winning_user_id.nil?
     #   ActionCable.server.broadcast 'GameChannel', game: last_game
