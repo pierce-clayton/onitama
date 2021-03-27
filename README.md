@@ -1,3 +1,8 @@
+## Onitama is live.
+
+Check out the deployed project at https://onitama.claytonpierce.dev
+
+If you want to play against yourself, open an incognito window and log in as another player.
 # Onitama
 
 Onitama is a game app based on the [board game of the same name](https://www.arcanewonders.com/resources/Onitama_Rulebook.PDF). This app was built soley for educational purposes and is not intended for comercial distribution.  
