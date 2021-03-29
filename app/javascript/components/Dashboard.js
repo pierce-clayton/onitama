@@ -21,10 +21,11 @@ const Dashboard = (props) => {
 
   // get users stats from the back end
   const getStats = () => {
-    console.log();
     const { user } = props;
     try {
-      const response = axios.get(`/users/${user.id}/stats`);
+      const response = axios.get(
+        `https://onitama.claytonpierce.dev/users/${user.id}/stats`
+      );
       if (response.status === 200) {
         setStats(response.data);
       }
