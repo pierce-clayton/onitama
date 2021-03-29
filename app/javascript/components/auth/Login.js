@@ -16,7 +16,7 @@ export default class Login extends Component {
     e.preventDefault();
     axios
       .post(
-        "https://localhost:3000/sessions",
+        "http://localhost:3000/sessions",
         // "https://onitama.claytonpierce.dev/sessions",
         {
           user: {
