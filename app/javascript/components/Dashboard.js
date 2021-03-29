@@ -20,18 +20,20 @@ const Dashboard = (props) => {
   };
 
   // get users stats from the back end
+
   const getStats = () => {
+    if (stats.red_games !== undefined) return;
     const { user } = props;
-    try {
-      const response = axios.get(
-        `https://onitama.claytonpierce.dev/users/${user.id}/stats`
-      );
-      if (response.status === 200) {
+    axios
+      .get(`https://onitama.claytonpierce.dev/users/${user.id}/stats`)
+      .then((response) => {
+        console.log(response);
         setStats(response.data);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+      })
+      .catch((error) => {
+        error;
+        console.log(error);
+      });
   };
 
   useEffect(() => {
