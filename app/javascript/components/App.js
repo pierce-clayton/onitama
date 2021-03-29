@@ -70,9 +70,11 @@ export default class App extends Component {
     this.setState({ ...this.state, forfeit: true, showNav: false });
   };
 
+  //https://onitama.claytonpierce.dev/logged_in"
+
   checkLoginStatus = () => {
     axios
-      .get("https://onitama.claytonpierce.dev/logged_in", { withCredentials: true })
+      .get("https://localhost:3000/logged_in", { withCredentials: true })
       .then((res) => {
         if (res.data.logged_in) {
           this.setState({
@@ -97,7 +99,9 @@ export default class App extends Component {
   //log the user out
   handleLogoutClick = (_) => {
     axios
-      .delete("https://onitama.claytonpierce.dev/logout", { withCredentials: true })
+      .delete("https://localhost:3000/logout", {
+        withCredentials: true,
+      })
       .then((res) => {
         this.handleLogout();
       })

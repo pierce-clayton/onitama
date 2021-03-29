@@ -26,9 +26,9 @@ class MatchChannel < ApplicationCable::Channel
     broadcast_to @game, shuffle: cards
   end
 
-  def getLastMove
-    broadcast_to @game, @game.moves.last.board_state
-  end
+  # def getLastMove
+  #   broadcast_to @game, @game.moves.last.board_state
+  # end
 
   def wonGame(user)
     winner = User.find_by(id: user["id"])

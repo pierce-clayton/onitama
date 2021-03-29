@@ -10,9 +10,11 @@ export default class Home extends Component {
     this.props.history.push("/dashboard");
   };
 
+  //"https://onitama.claytonpierce.dev/logout"
+
   handleLogoutClick = (_) => {
     axios
-      .delete("https://onitama.claytonpierce.dev/logout", { withCredentials: true })
+      .delete("https://localhost:3000/logout", { withCredentials: true })
       .then((res) => {
         this.props.handleLogout();
       })

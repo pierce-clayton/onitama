@@ -9,8 +9,8 @@ import { BrowserRouter as Router, Route } from 'react-router-dom'
 import actioncable from 'actioncable'
 
 const CableApp = {}
-
-CableApp.cable = actioncable.createConsumer('wss://murmuring-beyond-38831.herokuapp.com/cable')
+//murmuring-beyond-38831.herokuapp.com
+CableApp.cable = actioncable.createConsumer('ws://localhost:3000/cable')
 
 document.addEventListener('DOMContentLoaded', () => {
   ReactDOM.render(
