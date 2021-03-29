@@ -1,7 +1,7 @@
-// export const API_ROOT = "https://onitama.claytonpierce.dev";
-export const API_ROOT = "https://localhost:3000";
-// export const API_WS_ROOT = "wss://murmuring-beyond-38831.herokuapp.com/cable";
-export const API_WS_ROOT = "wss://localhost:3000/cable";
+export const API_ROOT = "https://onitama.claytonpierce.dev";
+// export const API_ROOT = "https://localhost:3000";
+export const API_WS_ROOT = "wss://murmuring-beyond-38831.herokuapp.com/cable";
+// export const API_WS_ROOT = "wss://localhost:3000/cable";
 export const HEADERS = {
   "Content-Type": "application/json",
   Accept: "application/json",

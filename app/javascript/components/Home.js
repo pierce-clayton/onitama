@@ -14,7 +14,9 @@ export default class Home extends Component {
 
   handleLogoutClick = (_) => {
     axios
-      .delete("https://localhost:3000/logout", { withCredentials: true })
+      .delete("https://onitama.claytonpierce.dev/logout", {
+        withCredentials: true,
+      })
       .then((res) => {
         this.props.handleLogout();
       })

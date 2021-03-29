@@ -57,6 +57,7 @@ class Game extends Component {
             this.updateValidMoves(data.validMoves);
           }
           if (data.sendMove) {
+            console.log("Recieving move");
             this.sendMove(data.sendMove);
           }
           if (data.shuffle) {
@@ -292,6 +293,7 @@ class Game extends Component {
         }
 
         //send updated board to the backend
+        console.log("Sending Move");
         this.match_channel.sendMove({ sendMove: { prevState, newPlayer } });
       }
     });
