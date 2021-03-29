@@ -20,7 +20,6 @@ const Dashboard = (props) => {
   };
 
   // get users stats from the back end
-
   const getStats = () => {
     if (stats.red_games !== undefined) return;
     const { user } = props;
